@@ -1,0 +1,84 @@
+package controllers
+
+import (
+	"blog/models"
+)
+
+type CategoryController struct {
+	BaseController
+}
+
+// @router /category/:title [get]
+func (this *CategoryController) ListArticle() {
+	//文章列表
+	var pageSize int = 6
+	page, err := this.GetInt("page")//获取页数
+	if err != nil && page < 1 {
+		page = 1
+	}
+	category := models.GetCategoryInfoByTitle(this.GetString(":title"))
+	articles, num := models.GetCategoryArticles(category.Id, pageSize, (page - 1) * pageSize)
+
+	//分页
+	var pages models.Page = models.NewPage(page, pageSize, int(num), "/category/" + this.GetString(":title"))
+
+	//侧边栏
+	latest, _ := models.GetLatestArticles(8, 0)
+	hot := models.GetTopViewArticles()
+	tags := models.GetArticleTags()
+
+	//模板变量
+	this.Data["article"] = articles
+	this.Data["latest"] = latest
+	this.Data["hot"] = hot
+	this.Data["tags"] = tags
+	this.Data["page"] = pages.Show()
+	this.Layout = "layout/frontend/2columns_right.tpl"
+	this.TplName = "article_list.tpl"
+}
+
+type AdminCategoryController struct {
+	AdminBaseController
+}
+
+// @router /admin/category [get,post]
+func (this *AdminCategoryController) ListCategory() {
+	if this.Ctx.Input.Method() == "GET" {
+		//分类列表
+		allCategory := models.GetCategoryList()
+
+		//模板变量
+		this.Data["xsrf_token"] = this.XSRFToken()
+		this.Data["category"] = allCategory
+		this.Layout = "layout/admin/2columns_left.tpl"
+		this.TplName = "admin/category.tpl"
+	} else {
+		category := &models.Category{}
+		if err := this.ParseForm(category); err != nil {
+			return
+		}
+		models.InsertCategory(category)
+		this.Redirect("/admin/category", 302)
+	}
+}
+
+// @router /admin/category/:id [post,put,delete]
+func (this *AdminCategoryController) UpdateCategory() {
+	if this.GetString("_method") == "DELETE" {
+		id, _ := this.GetInt64(":id")
+		err := models.DeleteCategory(id)
+		if err == nil {
+			this.Redirect("/admin/category", 302)
+		}
+	} else {
+		id, _ := this.GetInt64(":id")
+		params := make(map[string]string)
+		params["title"] = this.GetString("title")
+		params["parent_id"] = this.GetString("parent_id")
+		params["sort"] = this.GetString("sort")
+		err := models.UpdateCategory(id, params)
+		if err == nil {
+			this.Redirect("/admin/category", 302)
+		}
+	}
+}

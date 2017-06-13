@@ -1,0 +1,9 @@
+jQuery(function($){
+    $('.del_btn').each(function(){
+        $(this).click(function(){
+            if(confirm("确定要删除数据吗")){
+                $(this).parent().submit();
+            }
+        });
+    });
+});

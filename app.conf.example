@@ -1,0 +1,28 @@
+appname = blog
+httpport = 8080
+runmode = dev
+
+#session配置
+sessionon = true
+sessionprovider = redis
+sessionproviderconfig = "127.0.0.1:6379"
+sessiongcmaxlifetime = 3600
+sessioncookielifetime = 3600
+
+#启用XSRF过滤
+enablexsrf = true
+xsrfkey = 61oETzKXQAGaYdkL5gEmGeJJFuYh7EQnp2XdTP1o
+xsrfexpire = 3600
+
+#mysql连接信息
+dbhost = 127.0.0.1
+dbdatabase = database
+dbport = 3306
+dbuser = root
+dbpassword =
+
+#redis连接信息
+redis_host = 127.0.0.1
+redis_password =
+redis_port = 6379
+redis_db = 0

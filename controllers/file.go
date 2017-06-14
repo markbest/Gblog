@@ -3,7 +3,6 @@ package controllers
 import (
 	"blog/models"
 	"fmt"
-	"os"
 	"path"
 	"github.com/astaxie/beego"
 )
@@ -77,9 +76,9 @@ func (this *AdminFileController) AdminFileList() {
 	this.TplName = "admin/files.tpl"
 }
 
-// 获取文件信息的接口
-type Stat interface {
-	Stat() (os.FileInfo, error)
+// 获取文件大小
+type Sizer interface {
+	Size() int64
 }
 
 // @router /admin/file/upload [post]
@@ -114,19 +113,21 @@ func (this *AdminFileController) AdminFileUpload() {
 	file.Title = FileName
 	file.Name = FileName
 	file.Cat = &default_file_category
-	if statInterface, ok := f.(Stat); ok {
-		fileInfo, _ := statInterface.Stat()
-		file.Size = fileInfo.Size()
-		file.Type = path.Ext(FileName)
+
+	if fileSizer, ok := f.(Sizer); ok {
+		file.Size = fileSizer.Size()
 	}
-	file.Link = FileName
+
+	file.Type = path.Ext(FileName)
+	file.Link = "file/" + FileName
+	beego.Info(file)
 	id, err := models.InsertFile(&file)
 	if err != nil {
 		beego.Info(id)
 		beego.Info(err)
 	}
 
-	this.Data["json"] = map[string]interface{}{"success": 1, "message": "avatar/" + FileName}
+	this.Data["json"] = map[string]interface{}{"success": 1, "message": "file/" + FileName}
 	this.ServeJSON()
 }
 

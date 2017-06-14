@@ -29,7 +29,7 @@
                         <form name="pic_info" action="/admin/picture/{{$picture.Id}}" method="post">
                             <input type="hidden" name="_xsrf" value="{{$.xsrf_token}}">
                             <a rel="group" href="/static/uploads/picture/{{$picture.Img_url}}" title="{{$picture.Note}}">
-                                <img src="/static/uploads/picture/{{$picture.Img_url}}" />
+                                <img src="/static/uploads/{{$picture.Img_url}}" />
                             </a>
                             Input Picture Note :<textarea name="note" style="height:54px;width:200px;border-color:#ffffff;padding:5px;font-size:12px;">{{$picture.Note}}</textarea>
                             <input style="margin:8px 5px 0px 0px;" type="checkbox" value="1" name="is_delete" />delete <button style="padding:5px 8px;float:right;" class="admin-btn btn btn-info">Save</button>

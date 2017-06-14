@@ -3,6 +3,8 @@ package controllers
 import (
 	"blog/models"
 	"fmt"
+	"time"
+	"os"
 )
 
 type AdminPictureController struct {
@@ -11,7 +13,6 @@ type AdminPictureController struct {
 
 // @router /admin/picture [get]
 func (this *AdminPictureController) ListPictures() {
-	this.Data["xsrf_token"] = this.XSRFToken()
 	this.Layout = "layout/admin/2columns_left.tpl"
 	this.TplName = "admin/picture/list.tpl"
 }
@@ -19,7 +20,6 @@ func (this *AdminPictureController) ListPictures() {
 // @router /admin/picture/edit [get]
 func (this *AdminPictureController) EditPicture() {
 	this.Data["pictures"] = models.GetPicturesList()
-	this.Data["xsrf_token"] = this.XSRFToken()
 	this.Layout = "layout/admin/2columns_left.tpl"
 	this.TplName = "admin/picture/edit.tpl"
 }
@@ -54,7 +54,9 @@ func (this *AdminPictureController) UploadPicture() {
 		return
 	}
 	// 设置保存目录
-	dirPath := "./static/uploads/picture/"
+	dirDatePrefix := "picture/" + time.Unix(time.Now().Unix(), 0).Format("2006/01/02")
+	dirPath := "./static/uploads/" + dirDatePrefix
+	os.MkdirAll(dirPath, 0777)
 	// 设置保存文件名
 	FileName := h.Filename
 	// 将文件保存到服务器中
@@ -68,10 +70,10 @@ func (this *AdminPictureController) UploadPicture() {
 
 	// 上传资料文件
 	picture := models.Picture{}
-	picture.Img_url = FileName
+	picture.Img_url = dirDatePrefix + "/" + FileName
 	picture.Note = ""
 	models.InsertPicture(&picture)
 
-	this.Data["json"] = map[string]interface{}{"success": 1, "message": "picture/" + FileName}
+	this.Data["json"] = map[string]interface{}{"success": 1, "message": dirDatePrefix + "/" + FileName}
 	this.ServeJSON()
 }

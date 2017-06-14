@@ -48,7 +48,6 @@ func (this *AdminCategoryController) ListCategory() {
 		allCategory := models.GetCategoryList()
 
 		//模板变量
-		this.Data["xsrf_token"] = this.XSRFToken()
 		this.Data["category"] = allCategory
 		this.Layout = "layout/admin/2columns_left.tpl"
 		this.TplName = "admin/category.tpl"

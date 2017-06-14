@@ -4,6 +4,8 @@ import (
 	"blog/models"
 	"fmt"
 	"github.com/astaxie/beego"
+	"time"
+	"os"
 )
 
 type CustomerController struct {
@@ -19,7 +21,6 @@ func (this *CustomerController) Index()  {
 // @router /customer/setting [get,post]
 func (this *CustomerController) Setting() {
 	if this.Ctx.Input.Method() == "GET" {
-		this.Data["xsrf_token"] = this.XSRFToken()
 		this.Layout = "layout/frontend/single.tpl"
 		this.TplName = "customer_setting.tpl"
 	} else {
@@ -67,7 +68,9 @@ func (this *CustomerController) Upload() {
 		return
 	}
 	// 设置保存目录
-	dirPath := "./static/uploads/avatar/"
+	dirDatePrefix := "avatar/" + time.Unix(time.Now().Unix(), 0).Format("2006/01/02")
+	dirPath := "./static/uploads/" + dirDatePrefix
+	os.MkdirAll(dirPath, 0777)
 	// 设置保存文件名
 	FileName := h.Filename
 	// 将文件保存到服务器中
@@ -82,17 +85,16 @@ func (this *CustomerController) Upload() {
 	// 更新客户头像
 	id, _ := this.GetInt64("id")
 	params := make(map[string]string)
-	params["icon"] = "avatar/" + FileName
+	params["icon"] = dirDatePrefix + "/" + FileName
 	models.UpdateCustomer(id, params)
 
-	this.Data["json"] = map[string]interface{}{"success": 1, "message": "avatar/" + FileName}
+	this.Data["json"] = map[string]interface{}{"success": 1, "message": dirDatePrefix + "/" + FileName}
 	this.ServeJSON()
 }
 
 // @router /customer/login [get,post]
 func (this *CustomerController) Login() {
 	if this.Ctx.Input.Method() == "GET" {
-		this.Data["xsrf_token"] = this.XSRFToken()
 		this.Layout = "layout/frontend/single_no_head.tpl"
 		this.TplName = "login.tpl"
 	} else {
@@ -121,7 +123,6 @@ func (this *CustomerController) Logout() {
 // @router /customer/register [get,post]
 func (this *CustomerController) Register() {
 	if this.Ctx.Input.Method() == "GET" {
-		this.Data["xsrf_token"] = this.XSRFToken()
 		this.Layout = "layout/frontend/single_no_head.tpl"
 		this.TplName = "register.tpl"
 	} else {

@@ -57,7 +57,6 @@ func (this *AdminArticleController) ListArticles() {
 func (this *AdminArticleController) UpdateArticle() {
 	id, _ := this.GetInt64(":id")
 	if this.Ctx.Input.Method() == "GET" {
-		this.Data["xsrf_token"] = this.XSRFToken()
 		this.Data["category"] = models.GetCategoryList()
 		this.Data["article"] = models.GetArticleInfo(id)
 		this.Layout = "layout/admin/2columns_left.tpl"
@@ -83,7 +82,6 @@ func (this *AdminArticleController) UpdateArticle() {
 // @router /admin/article/create [get,post]
 func (this *AdminArticleController) AddArticle() {
 	if this.Ctx.Input.Method() == "GET" {
-		this.Data["xsrf_token"] = this.XSRFToken()
 		this.Data["category"] = models.GetCategoryList()
 		this.Layout = "layout/admin/2columns_left.tpl"
 		this.TplName = "admin/article/add.tpl"

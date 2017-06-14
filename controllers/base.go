@@ -24,6 +24,8 @@ func (this *BaseController) Prepare() {
 	//分类列表
 	allCategory := models.GetCategoryList()
 
+	//模板变量
+	this.Data["xsrf_token"] = this.XSRFToken()
 	this.Data["current_url"] = this.Ctx.Request.RequestURI
 	this.Data["isLogin"] = this.isLogin
 	this.Data["loginCustomer"] = loginCustomer
@@ -47,6 +49,8 @@ func (this *AdminBaseController) Prepare() {
 		loginUser = models.GetUserInfo(this.GetSession("admin_userId"))
 	}
 
+	//模板变量
+	this.Data["xsrf_token"] = this.XSRFToken()
 	this.Data["current_url"] = this.Ctx.Request.RequestURI
 	this.Data["isAdminLogin"] = this.isAdminLogin
 	this.Data["loginUser"] = loginUser

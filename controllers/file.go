@@ -4,7 +4,8 @@ import (
 	"blog/models"
 	"fmt"
 	"path"
-	"github.com/astaxie/beego"
+	"time"
+	"os"
 )
 
 type FileController struct {
@@ -68,7 +69,6 @@ func (this *AdminFileController) AdminFileList() {
 	var pages models.Page = models.NewPage(page, pageSize, int(num), "/admin/file")
 
 	//模板变量
-	this.Data["xsrf_token"] = this.XSRFToken()
 	this.Data["files"] = files
 	this.Data["page"] = pages.Show()
 	this.Data["category"] = allCategory
@@ -95,7 +95,9 @@ func (this *AdminFileController) AdminFileUpload() {
 		return
 	}
 	// 设置保存目录
-	dirPath := "./static/uploads/file/"
+	dirDatePrefix := "file/" + time.Unix(time.Now().Unix(), 0).Format("2006/01/02")
+	dirPath := "./static/uploads/" + dirDatePrefix
+	os.MkdirAll(dirPath, 0777)
 	// 设置保存文件名
 	FileName := h.Filename
 	// 将文件保存到服务器中
@@ -119,15 +121,10 @@ func (this *AdminFileController) AdminFileUpload() {
 	}
 
 	file.Type = path.Ext(FileName)
-	file.Link = "file/" + FileName
-	beego.Info(file)
-	id, err := models.InsertFile(&file)
-	if err != nil {
-		beego.Info(id)
-		beego.Info(err)
-	}
+	file.Link = dirDatePrefix + "/" + FileName
+	models.InsertFile(&file)
 
-	this.Data["json"] = map[string]interface{}{"success": 1, "message": "file/" + FileName}
+	this.Data["json"] = map[string]interface{}{"success": 1, "message": dirDatePrefix + "/" + FileName}
 	this.ServeJSON()
 }
 

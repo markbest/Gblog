@@ -16,7 +16,6 @@ func (this *AdminConfigController) Setting() {
 		configs := models.GetListConfig()
 
 		//模板变量
-		this.Data["xsrf_token"] = this.XSRFToken()
 		this.Data["configs"] = configs
 		this.Layout = "layout/admin/2columns_left.tpl"
 		this.TplName = "admin/config.tpl"

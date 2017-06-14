@@ -12,7 +12,6 @@ type AdminUserController struct {
 // @router /admin/login [get,post]
 func (this *AdminUserController) Login() {
 	if this.Ctx.Input.Method() == "GET" {
-		this.Data["xsrf_token"] = this.XSRFToken()
 		this.Layout = "layout/admin/single.tpl"
 		this.TplName = "admin/login.tpl"
 	} else {
@@ -52,7 +51,6 @@ func (this *AdminUserController) ListUsers() {
 	var pages models.Page = models.NewPage(page, pageSize, int(num), "/admin/user")
 
 	//模板变量
-	this.Data["xsrf_token"] = this.XSRFToken()
 	this.Data["users"] = users
 	this.Data["page"] = pages.Show()
 	this.Layout = "layout/admin/2columns_left.tpl"

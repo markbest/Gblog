@@ -33,6 +33,10 @@ type AdminArticleController struct {
 }
 
 // @router /admin [get]
+func (this *AdminArticleController) Index() {
+	this.Redirect("/admin/article", 302)
+}
+
 // @router /admin/article [get]
 func (this *AdminArticleController) ListArticles() {
 	//文章列表

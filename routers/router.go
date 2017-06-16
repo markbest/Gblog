@@ -40,4 +40,14 @@ func init() {
 	beego.Include(&controllers.AdminUserController{})
 	beego.Include(&controllers.AdminPictureController{})
 	beego.Include(&controllers.AdminConfigController{})
+
+	//API路由
+	ns := beego.NewNamespace("/api",
+		beego.NSNamespace("/v1",
+			beego.NSInclude(
+				&controllers.ApiController{},
+			),
+		),
+	)
+	beego.AddNamespace(ns)
 }

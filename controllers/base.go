@@ -30,7 +30,6 @@ func (this *BaseController) Prepare() {
 	this.Data["isLogin"] = this.isLogin
 	this.Data["loginCustomer"] = loginCustomer
 	this.Data["category"] = allCategory
-	beego.Info(this.Ctx.Request.RequestURI)
 }
 
 type AdminBaseController struct {

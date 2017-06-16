@@ -13,7 +13,7 @@ type Category struct {
 	Sort       	int64  `form:"sort" valid:"Required;"`
 	Created_at      time.Time `orm:"auto_now_add;type(datetime)" form:"-"`
 	Updated_at      time.Time `orm:"auto_now;type(datetime)" form:"-"`
-	Count_articles  int64 `orm:"-" form:"-"`
+	Count_articles  int64 `orm:"-" form:"-" json:"count"`
 	Sub_category    []Category `orm:"-" form:"-"`
 }
 
@@ -58,6 +58,18 @@ func GetCategoryList() (c []Category){
 
 		allCategory := Category{v.Id, v.Title, v.Parent_id, v.Sort, v.Created_at, v.Updated_at, count, GetSubCategory(v.Id)}
 		c = append(c, allCategory)
+	}
+	return c
+}
+
+func GetLayerCategoryList() (c []Category){
+	o := orm.NewOrm()
+	qs := o.QueryTable(new(Category))
+
+	var l []Category
+	qs.OrderBy("id").All(&l)
+	for _, v := range l {
+		c = append(c, v)
 	}
 	return c
 }

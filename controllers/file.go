@@ -15,7 +15,7 @@ type FileController struct {
 // @router /category/files [get]
 func (this *FileController) FileList() {
 	//文件列表
-	var pageSize int = 6
+	var pageSize int = 20
 	page, err := this.GetInt("page")//获取页数
 	if err != nil && page < 1 {
 		page = 1
@@ -23,7 +23,7 @@ func (this *FileController) FileList() {
 	articles, num := models.GetFilesList(pageSize, (page - 1) * pageSize)
 
 	//分页
-	var pages models.Page = models.NewPage(page, pageSize, int(num), "/files")
+	var pages models.Page = models.NewPage(page, pageSize, int(num), "/category/files")
 
 	//侧边栏
 	latest, _ := models.GetLatestArticles(8, 0)

@@ -14,6 +14,9 @@ func (this *ArticleController) GetInfo() {
 	article_id, _ := this.GetInt64(":id")
 	article := models.GetArticleInfo(article_id)
 
+	//增加article的views
+	models.IncreaseViews(article_id)
+
 	//侧边栏
 	latest, _ := models.GetLatestArticles(8, 0)
 	hot := models.GetTopViewArticles()

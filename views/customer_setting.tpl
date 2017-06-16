@@ -20,6 +20,7 @@
                                     <form id="setting_form" method="post" action="/customer/setting">
                                         <input type="hidden" name="_xsrf" value="{{.xsrf_token}}">
                                         <input type="hidden" name="customer_id" value="{{.loginCustomer.Id}}">
+                                        <p>{{.flash.error}}</p>
                                         <dl><dt>初始密码:</dt><dd><input class="form-control" type="password" name="old_password" required="required"></dd></dl>
                                         <dl><dt>新改密码:</dt><dd><input class="form-control" type="password" name="password" required="required"></dd></dl>
                                         <dl><dt>确认密码:</dt><dd><input class="form-control" type="password" name="password_confirmation" required="required"></dd></dl>

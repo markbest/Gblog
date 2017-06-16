@@ -21,6 +21,7 @@ func (this *CustomerController) Index()  {
 // @router /customer/setting [get,post]
 func (this *CustomerController) Setting() {
 	if this.Ctx.Input.Method() == "GET" {
+		beego.ReadFromRequest(&this.Controller)
 		this.Layout = "layout/frontend/single.tpl"
 		this.TplName = "customer_setting.tpl"
 	} else {
@@ -41,14 +42,16 @@ func (this *CustomerController) Setting() {
 				params["new_password"] = newPwd
 			}
 		} else {
-			flash.Warning("两次密码不一致，请重试！")
+			flash.Error("两次密码不一致，请重试！")
+			flash.Store(&this.Controller)
 			this.Redirect("/customer/setting", 302)
 		}
 		err := models.UpdateCustomer(id, params)
 		if err == nil {
 			this.Redirect("/customer/setting", 302)
 		} else {
-			flash.Warning("更新客户数据失败，请重试！")
+			flash.Error("更新客户数据失败，请重试！")
+			flash.Store(&this.Controller)
 			this.Redirect("/customer/setting", 302)
 		}
 	}
@@ -95,6 +98,7 @@ func (this *CustomerController) Upload() {
 // @router /customer/login [get,post]
 func (this *CustomerController) Login() {
 	if this.Ctx.Input.Method() == "GET" {
+		beego.ReadFromRequest(&this.Controller)
 		this.Layout = "layout/frontend/single_no_head.tpl"
 		this.TplName = "login.tpl"
 	} else {
@@ -108,6 +112,7 @@ func (this *CustomerController) Login() {
 			this.Redirect("/customer/home", 302)
 		} else {
 			flash.Error("登陆失败，请重试!")
+			flash.Store(&this.Controller)
 			this.Redirect("/customer/login", 302)
 		}
 	}
@@ -123,6 +128,7 @@ func (this *CustomerController) Logout() {
 // @router /customer/register [get,post]
 func (this *CustomerController) Register() {
 	if this.Ctx.Input.Method() == "GET" {
+		beego.ReadFromRequest(&this.Controller)
 		this.Layout = "layout/frontend/single_no_head.tpl"
 		this.TplName = "register.tpl"
 	} else {
@@ -133,8 +139,9 @@ func (this *CustomerController) Register() {
 		}
 
 		if customer.Password != customer.Repassword {
-			flash.Warning("两次密码输入不一致")
+			flash.Error("两次密码输入不一致")
 			flash.Store(&this.Controller)
+			this.Redirect("/customer/register", 302)
 			return
 		}
 
@@ -144,6 +151,7 @@ func (this *CustomerController) Register() {
 			this.Redirect("/customer/home", 302)
 		} else {
 			flash.Error("注册失败，请重试！")
+			flash.Store(&this.Controller)
 			this.Redirect("/customer/register", 302)
 		}
 	}

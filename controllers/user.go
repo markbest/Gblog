@@ -12,6 +12,7 @@ type AdminUserController struct {
 // @router /admin/login [get,post]
 func (this *AdminUserController) Login() {
 	if this.Ctx.Input.Method() == "GET" {
+		beego.ReadFromRequest(&this.Controller)
 		this.Layout = "layout/admin/single.tpl"
 		this.TplName = "admin/login.tpl"
 	} else {
@@ -25,6 +26,7 @@ func (this *AdminUserController) Login() {
 			this.Redirect("/admin/article", 302)
 		} else {
 			flash.Error("登陆失败，请重试!")
+			flash.Store(&this.Controller)
 			this.Redirect("/admin/login", 302)
 		}
 	}

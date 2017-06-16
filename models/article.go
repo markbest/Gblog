@@ -35,7 +35,7 @@ func GetLatestArticles(page int, offset int) (a []Article, count int64){
 	var articles []Article
 	qs := o.QueryTable(new(Article))
 	count, _ = qs.Count()
-	qs.OrderBy("-created_at").RelatedSel().Limit(page, offset).All(&articles)
+	qs.OrderBy("-id").RelatedSel().Limit(page, offset).All(&articles)
 	for _, v := range articles {
 		a = append(a, v)
 	}
@@ -141,4 +141,15 @@ func DeleteArticle(id int64) error {
 		return err
 	}
 	return nil
+}
+
+func IncreaseViews(id int64) {
+	o := orm.NewOrm()
+
+	article := Article{Id: id}
+	if o.Read(&article) == nil {
+		article.Views = int64(article.Views) + 1
+		o.Update(&article)
+	}
+	return
 }

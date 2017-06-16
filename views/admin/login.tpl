@@ -10,6 +10,7 @@
             <div class="panel-body">
                 <form role="form" method="POST" action="/admin/login">
                     <input type="hidden" name="_xsrf" value="{{.xsrf_token}}" />
+                    <p>{{.flash.error}}</p>
                     <fieldset>
                         <div class="form-group">
                             <input class="form-control" placeholder="E-mail" name="email" required="required" type="email" autofocus value="">

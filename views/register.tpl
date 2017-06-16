@@ -9,6 +9,7 @@
                 <div class="panel-body">
                     <form role="form" method="POST" action="/customer/register">
                         <input type="hidden" name="_xsrf" value="{{.xsrf_token}}">
+                        <p>{{.flash.error}}</p>
                         <div class="form-group">
                             <input type="text" placeholder="昵称" class="form-control" name="name" required="required" value="">
                         </div>

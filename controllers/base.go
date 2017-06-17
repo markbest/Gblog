@@ -24,12 +24,20 @@ func (this *BaseController) Prepare() {
 	//分类列表
 	allCategory := models.GetCategoryList()
 
+	//侧边栏
+	latest, _ := models.GetLatestArticles(8, 0)
+	hot := models.GetTopViewArticles()
+	tags := models.GetArticleTags()
+
 	//模板变量
 	this.Data["xsrf_token"] = this.XSRFToken()
 	this.Data["current_url"] = this.Ctx.Request.RequestURI
 	this.Data["isLogin"] = this.isLogin
 	this.Data["loginCustomer"] = loginCustomer
 	this.Data["category"] = allCategory
+	this.Data["latest"] = latest
+	this.Data["hot"] = hot
+	this.Data["tags"] = tags
 }
 
 type AdminBaseController struct {

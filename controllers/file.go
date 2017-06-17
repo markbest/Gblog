@@ -25,16 +25,8 @@ func (this *FileController) FileList() {
 	//分页
 	var pages models.Page = models.NewPage(page, pageSize, int(num), "/category/files")
 
-	//侧边栏
-	latest, _ := models.GetLatestArticles(8, 0)
-	hot := models.GetTopViewArticles()
-	tags := models.GetArticleTags()
-
 	//模板变量
 	this.Data["files"] = articles
-	this.Data["latest"] = latest
-	this.Data["hot"] = hot
-	this.Data["tags"] = tags
 	this.Data["page"] = pages.Show()
 	this.Layout = "layout/frontend/2columns_right.tpl"
 	this.TplName = "files.tpl"

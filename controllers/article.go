@@ -17,15 +17,7 @@ func (this *ArticleController) GetInfo() {
 	//增加article的views
 	models.IncreaseViews(article_id)
 
-	//侧边栏
-	latest, _ := models.GetLatestArticles(8, 0)
-	hot := models.GetTopViewArticles()
-	tags := models.GetArticleTags()
-
 	//模板变量
-	this.Data["latest"] = latest
-	this.Data["hot"] = hot
-	this.Data["tags"] = tags
 	this.Data["article"] = article
 	this.Layout = "layout/frontend/2columns_right.tpl"
 	this.TplName = "article_info.tpl"

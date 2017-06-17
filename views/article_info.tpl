@@ -12,7 +12,7 @@
     </div>
     <div class="tag-article">
         <span class="label"><i class="fa fa-tags"></i> {{date .article.Created_at "m-d"}}</span>
-        <span class="label"><i class="fa fa-user"></i> mark</span>
+        <span class="label"><i class="fa fa-user"></i> {{.article.User.Name}}</span>
         <span class="label"><i class="fa fa-eye"></i> {{.article.Views}}</span>
     </div>
     <div id="content">

@@ -35,7 +35,7 @@ func GetLatestArticles(page int, offset int) (a []Article, count int64){
 	var articles []Article
 	qs := o.QueryTable(new(Article))
 	count, _ = qs.Count()
-	qs.OrderBy("-id").RelatedSel().Limit(page, offset).All(&articles)
+	qs.OrderBy("-id").RelatedSel().Limit(page, offset).All(&articles, "Id", "Title")
 	for _, v := range articles {
 		a = append(a, v)
 	}
@@ -47,7 +47,7 @@ func GetTopViewArticles() (a []Article){
 
 	var articles []Article
 	qs := o.QueryTable(new(Article))
-	qs.OrderBy("-views").Limit(8).All(&articles)
+	qs.OrderBy("-views").RelatedSel().Limit(8).All(&articles, "Id", "Title", "Views")
 	for _, v := range articles {
 		a = append(a, v)
 	}
@@ -89,7 +89,7 @@ func GetArticleInfo(id int64) (a Article){
 	o := orm.NewOrm()
 
 	qs := o.QueryTable(new(Article))
-	qs.Filter("id", id).One(&a)
+	qs.Filter("id", id).RelatedSel().One(&a)
 	return a
 }
 

@@ -3,6 +3,9 @@ package controllers
 import (
 	"github.com/astaxie/beego"
 	"blog/models"
+	"blog/utils"
+	"encoding/json"
+	"time"
 )
 
 type BaseController struct {
@@ -11,6 +14,9 @@ type BaseController struct {
 }
 
 func (this *BaseController) Prepare() {
+	//redis cache client
+	redis := utils.GetRedisClient()
+
 	//前台登陆信息
 	var loginCustomer models.Customer
 	userLogin := this.GetSession("userLogin")
@@ -22,12 +28,49 @@ func (this *BaseController) Prepare() {
 	}
 
 	//分类列表
-	allCategory := models.GetCategoryList()
+	var allCategory []models.Category
+	if redis.IsExist("allCategory") {
+		cache_content := string(redis.Get("allCategory").([]uint8))
+		json.Unmarshal([]byte(cache_content), &allCategory)
+	} else {
+		allCategory = models.GetCategoryList()
+		if str, err := json.Marshal(allCategory); err == nil {
+			redis.Put("allCategory", string(str), 24 * time.Hour)
+		}
+	}
 
 	//侧边栏
-	latest, _ := models.GetLatestArticles(8, 0)
-	hot := models.GetTopViewArticles()
-	tags := models.GetArticleTags()
+	var latest, hot []models.Article
+	if redis.IsExist("latest") {
+		cache_content := string(redis.Get("latest").([]uint8))
+		json.Unmarshal([]byte(cache_content), &latest)
+	} else {
+		latest, _ = models.GetLatestArticles(8, 0)
+		if str, err := json.Marshal(latest); err == nil {
+			redis.Put("latest", string(str), 24 * time.Hour)
+		}
+	}
+
+	if redis.IsExist("hot") {
+		cache_content := string(redis.Get("hot").([]uint8))
+		json.Unmarshal([]byte(cache_content), &hot)
+	} else {
+		hot = models.GetTopViewArticles()
+		if str, err := json.Marshal(hot); err == nil {
+			redis.Put("hot", string(str), 24 * time.Hour)
+		}
+	}
+
+	var tags []map[string]int64
+	if redis.IsExist("tags") {
+		cache_content := string(redis.Get("tags").([]uint8))
+		json.Unmarshal([]byte(cache_content), &tags)
+	} else {
+		tags = models.GetArticleTags()
+		if str, err := json.Marshal(tags); err == nil {
+			redis.Put("tags", string(str), 24 * time.Hour)
+		}
+	}
 
 	//模板变量
 	this.Data["xsrf_token"] = this.XSRFToken()

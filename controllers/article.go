@@ -2,6 +2,10 @@ package controllers
 
 import (
 	"blog/models"
+	"blog/utils"
+	"encoding/json"
+	"strconv"
+	"time"
 )
 
 type ArticleController struct {
@@ -10,9 +14,22 @@ type ArticleController struct {
 
 // @router /article/:id [get]
 func (this *ArticleController) GetInfo() {
-	//文章详情
+	//redis cache client
+	redis := utils.GetRedisClient()
+
+	//文章详情（如果有缓存，先从缓存中取数据）
+	var article models.Article
 	article_id, _ := this.GetInt64(":id")
-	article := models.GetArticleInfo(article_id)
+	cache_tag := "article-" + strconv.FormatInt(article_id,10)
+	if redis.IsExist(cache_tag) {
+		cache_content := string(redis.Get(cache_tag).([]uint8))
+		json.Unmarshal([]byte(cache_content), &article)
+	} else {
+		article = models.GetArticleInfo(article_id)
+		if str, err := json.Marshal(article); err == nil {
+			redis.Put(cache_tag, string(str), 24 * time.Hour)
+		}
+	}
 
 	//增加article的views
 	models.IncreaseViews(article_id)

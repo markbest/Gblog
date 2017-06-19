@@ -253,7 +253,7 @@ body{font-family: Helvetica, Arial, sans-serif;}
 .works-content ul.works-list li{list-style:none;margin-bottom:20px;}
 .works-content ul.works-list li h1{margin:0px;padding:10px 0px;border-bottom:1px solid #ddd;font-weight:bold;}
 .works-content ul.works-list li .content{margin:10px 0px 0px 10px;}
-.works-content ul.works-list li .content p{height:25px;line-height:25px;margin:0px;}
+.works-content ul.works-list li .content p{line-height:25px;margin:0px;}
 
 /* 标签云 */
 .tags-list-content{padding:10px;}

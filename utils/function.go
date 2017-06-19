@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"time"
 	"math/rand"
+	"os"
+	"fmt"
 )
 
 const (
@@ -88,4 +90,15 @@ func IsActive(request_url string, target_url string) bool {
 		is_active = false
 	}
 	return is_active
+}
+
+//获取静态文件的版本号
+func GetStaticVersion(filename string) (t string) {
+	file_path := "static/css/" + filename
+	if fileInfo, err := os.Stat(file_path); err == nil {
+		t = fileInfo.ModTime().Format("200601021504")
+	} else {
+		fmt.Println(err)
+	}
+	return t
 }

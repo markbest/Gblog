@@ -7,7 +7,7 @@
     <title>{{index .configs "web_title"}}</title>
     <link rel="icon" href="/static/images/favicon.ico" type="image/x-icon"/>
     <link rel="shortcut icon" href="/static/images/favicon.ico" type="image/x-icon"/>
-    <link href="/static/css/customer.css" rel="stylesheet">
+    <link href="/static/css/customer.css?v={{version "customer.css"}}" rel="stylesheet">
     <link href="/static/css/app.css" rel="stylesheet">
     <link href="/static/css/font-awesome.min.css" rel="stylesheet">
     <script src="/static/js/jquery-1.9.1.min.js"></script>

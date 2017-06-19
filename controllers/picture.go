@@ -73,12 +73,53 @@ func (this *AdminPictureController) UploadPicture() {
 		return
 	}
 
-	// 上传资料文件
+	// 上传图片
 	picture := models.Picture{}
 	picture.Img_url = dirDatePrefix + "/" + saveToFile
 	picture.Note = ""
 	models.InsertPicture(&picture)
 
 	this.Data["json"] = map[string]interface{}{"success": 1, "message": dirDatePrefix + "/" + saveToFile}
+	this.ServeJSON()
+}
+
+// @router /admin/markdown/upload [post]
+func (this *AdminPictureController) UploadMarkdownPicture() {
+	// 获取上传文件
+	f, h, err := this.GetFile("editormd-image-file")
+	if err == nil {
+		// 关闭文件
+		f.Close()
+	} else {
+		// 获取错误则输出错误信息
+		this.Data["json"] = map[string]interface{}{"success": 0, "message": err.Error()}
+		this.ServeJSON()
+		return
+	}
+	// 设置保存目录
+	dirDatePrefix := "picture/" + time.Unix(time.Now().Unix(), 0).Format("2006/01/02")
+	dirPath := "./static/uploads/" + dirDatePrefix
+	os.MkdirAll(dirPath, 0777)
+
+	// 设置保存文件名
+	FileName := h.Filename
+	saveToFile := string(utils.Krand(8, utils.KC_RAND_KIND_ALL)) + path.Ext(FileName)
+
+	// 将文件保存到服务器中
+	err = this.SaveToFile("editormd-image-file", fmt.Sprintf("%s/%s", dirPath, saveToFile))
+	if err != nil {
+		// 出错则输出错误信息
+		this.Data["json"] = map[string]interface{}{"success": 0, "message": err.Error()}
+		this.ServeJSON()
+		return
+	}
+
+	// 上传图片
+	picture := models.Picture{}
+	picture.Img_url = dirDatePrefix + "/" + saveToFile
+	picture.Note = ""
+	models.InsertPicture(&picture)
+
+	this.Data["json"] = map[string]interface{}{"success": 1, "message": "success upoload", "url": "/static/uploads/" + dirDatePrefix + "/" + saveToFile}
 	this.ServeJSON()
 }

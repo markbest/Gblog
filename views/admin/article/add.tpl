@@ -55,7 +55,10 @@
             width   : "100%",
             height  : 640,
             syncScrolling : "single",
-            path    : "/static/js/lib/"
+            path    : "/static/js/lib/",
+            imageUpload    : true,
+            imageFormats   : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+            imageUploadURL : "/admin/markdown/upload?_xsrf=" + $('input[name="_xsrf"]').val(),
         });
     });
 </script>

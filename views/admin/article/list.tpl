@@ -48,7 +48,7 @@
                                 <a href="/admin/article/{{$article.Id}}" class="admin-btn btn btn-success"><i class="fa fa-pencil fa-fw"></i>编辑</a>
                                 <form action="/admin/article/{{$article.Id}}" method="POST" style="display: inline;">
                                     <input name="_method" type="hidden" value="DELETE">
-                                    <input type="hidden" name="_token" value="HuXZoSk5VA1Xar3g68VEEIfYoVILD810WtOqafbk">
+                                    <input type="hidden" name="_xsrf" value="{{$.xsrf_token}}">
                                     <button type="button" class="admin-btn btn btn-danger del_btn"><i class="fa fa-trash fa-fw"></i>删除</button>
                                 </form>
                             </td>

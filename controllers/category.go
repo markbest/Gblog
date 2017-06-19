@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"blog/models"
+	"blog/utils"
 )
 
 type CategoryController struct {
@@ -11,7 +12,7 @@ type CategoryController struct {
 // @router /category/:title [get]
 func (this *CategoryController) ListArticle() {
 	//文章列表
-	var pageSize int = 6
+	pageSize := utils.StringToInt(this.config["web_perpage"])
 	page, err := this.GetInt("page")//获取页数
 	if err != nil && page < 1 {
 		page = 1
@@ -49,6 +50,11 @@ func (this *AdminCategoryController) ListCategory() {
 			return
 		}
 		models.InsertCategory(category)
+
+		//删除分类的缓存
+		redis := utils.GetRedisClient()
+		redis.Delete("allCategory")
+
 		this.Redirect("/admin/category", 302)
 	}
 }
@@ -58,6 +64,11 @@ func (this *AdminCategoryController) UpdateCategory() {
 	if this.GetString("_method") == "DELETE" {
 		id, _ := this.GetInt64(":id")
 		err := models.DeleteCategory(id)
+
+		//删除分类的缓存
+		redis := utils.GetRedisClient()
+		redis.Delete("allCategory")
+
 		if err == nil {
 			this.Redirect("/admin/category", 302)
 		}
@@ -68,6 +79,11 @@ func (this *AdminCategoryController) UpdateCategory() {
 		params["parent_id"] = this.GetString("parent_id")
 		params["sort"] = this.GetString("sort")
 		err := models.UpdateCategory(id, params)
+
+		//删除分类的缓存
+		redis := utils.GetRedisClient()
+		redis.Delete("allCategory")
+
 		if err == nil {
 			this.Redirect("/admin/category", 302)
 		}

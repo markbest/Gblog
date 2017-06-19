@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"blog/models"
+	"blog/utils"
 )
 
 type MainController struct {
@@ -11,7 +12,7 @@ type MainController struct {
 // @router / [get]
 func (this *MainController) Get() {
 	//文章列表
-	var pageSize int = 6
+	pageSize := utils.StringToInt(this.config["web_perpage"])
 	page, err := this.GetInt("page")//获取页数
 	if err != nil && page < 1 {
 		page = 1

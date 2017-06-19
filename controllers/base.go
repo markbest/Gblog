@@ -11,11 +11,28 @@ import (
 type BaseController struct {
 	beego.Controller
 	isLogin bool
+	config map[string]string
 }
 
 func (this *BaseController) Prepare() {
 	//redis cache client
 	redis := utils.GetRedisClient()
+
+	//配置信息
+	var cache_time int64
+	config := make(map[string]string)
+	if redis.IsExist("configs") {
+		cache_content := string(redis.Get("configs").([]uint8))
+		json.Unmarshal([]byte(cache_content), &config)
+		cache_time = utils.StringToInt64(config["web_cache_time"])
+	} else {
+		config = models.GetConfigs()
+		cache_time = utils.StringToInt64(config["web_cache_time"])
+		if str, err := json.Marshal(config); err == nil {
+			redis.Put("configs", string(str), time.Duration(cache_time) * time.Second)
+		}
+	}
+	this.config = config
 
 	//前台登陆信息
 	var loginCustomer models.Customer
@@ -35,7 +52,7 @@ func (this *BaseController) Prepare() {
 	} else {
 		allCategory = models.GetCategoryList()
 		if str, err := json.Marshal(allCategory); err == nil {
-			redis.Put("allCategory", string(str), 24 * time.Hour)
+			redis.Put("allCategory", string(str), time.Duration(cache_time) * time.Second)
 		}
 	}
 
@@ -47,7 +64,7 @@ func (this *BaseController) Prepare() {
 	} else {
 		latest, _ = models.GetLatestArticles(8, 0)
 		if str, err := json.Marshal(latest); err == nil {
-			redis.Put("latest", string(str), 24 * time.Hour)
+			redis.Put("latest", string(str), time.Duration(cache_time) * time.Second)
 		}
 	}
 
@@ -57,7 +74,7 @@ func (this *BaseController) Prepare() {
 	} else {
 		hot = models.GetTopViewArticles()
 		if str, err := json.Marshal(hot); err == nil {
-			redis.Put("hot", string(str), 24 * time.Hour)
+			redis.Put("hot", string(str), time.Duration(cache_time) * time.Second)
 		}
 	}
 
@@ -68,7 +85,7 @@ func (this *BaseController) Prepare() {
 	} else {
 		tags = models.GetArticleTags()
 		if str, err := json.Marshal(tags); err == nil {
-			redis.Put("tags", string(str), 24 * time.Hour)
+			redis.Put("tags", string(str), time.Duration(cache_time) * time.Second)
 		}
 	}
 
@@ -81,6 +98,7 @@ func (this *BaseController) Prepare() {
 	this.Data["latest"] = latest
 	this.Data["hot"] = hot
 	this.Data["tags"] = tags
+	this.Data["configs"] = config
 }
 
 type AdminBaseController struct {

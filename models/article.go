@@ -35,7 +35,7 @@ func GetLatestArticles(page int, offset int) (a []Article, count int64){
 	var articles []Article
 	qs := o.QueryTable(new(Article))
 	count, _ = qs.Count()
-	qs.OrderBy("-id").RelatedSel().Limit(page, offset).All(&articles, "Id", "Title")
+	qs.OrderBy("-id").RelatedSel().Limit(page, offset).All(&articles, "Id", "Title", "Summary", "Slug", "Views", "Created_at")
 	for _, v := range articles {
 		a = append(a, v)
 	}

@@ -1,5 +1,5 @@
 <div id="footer">
-    Copyright © 2015 - 2017 markbest.site - 你的指尖有改变世界的力量 - All Rights Reserved.
+    {{index .configs "web_copyright"}}
 </div>
 <a id="scrollUp"></a>
 <script type="text/javascript">

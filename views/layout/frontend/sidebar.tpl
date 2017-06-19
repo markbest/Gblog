@@ -9,7 +9,7 @@
     <ul class="list-group list-group-flush">
         {{range $id, $article := .latest}}
         <li class="list-group-item">
-            <a href="article/{{$article.Id}}" title="{{$article.Title}}">
+            <a href="/article/{{$article.Id}}" title="{{$article.Title}}">
                 {{$article.Title}}
             </a>
         </li>
@@ -21,7 +21,7 @@
     <ul class="list-group list-group-flush">
         {{range $id, $article := .hot}}
         <li class="list-group-item">
-            <a href="article/{{$article.Id}}" title="{{$article.Title}}">
+            <a href="/article/{{$article.Id}}" title="{{$article.Title}}">
                 {{$article.Title}}
             </a>
             <label class="badge">{{$article.Views}}</label>

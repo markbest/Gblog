@@ -4,8 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>你的指尖有改变世界的力量 - markbest.site</title>
-    <meta name="_xsrf" content="{{.xsrf_token}}" />
+    <title>{{index .configs "web_title"}}</title>
     <link rel="icon" href="/static/images/favicon.ico" type="image/x-icon"/>
     <link rel="shortcut icon" href="/static/images/favicon.ico" type="image/x-icon"/>
     <link href="/static/css/customer.css" rel="stylesheet">

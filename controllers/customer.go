@@ -2,10 +2,12 @@ package controllers
 
 import (
 	"blog/models"
+	"blog/utils"
 	"fmt"
 	"github.com/astaxie/beego"
 	"time"
 	"os"
+	"path"
 )
 
 type CustomerController struct {
@@ -74,10 +76,13 @@ func (this *CustomerController) Upload() {
 	dirDatePrefix := "avatar/" + time.Unix(time.Now().Unix(), 0).Format("2006/01/02")
 	dirPath := "./static/uploads/" + dirDatePrefix
 	os.MkdirAll(dirPath, 0777)
+
 	// 设置保存文件名
 	FileName := h.Filename
+	saveToFile := string(utils.Krand(8, utils.KC_RAND_KIND_ALL)) + path.Ext(FileName)
+
 	// 将文件保存到服务器中
-	err = this.SaveToFile("customer_icon", fmt.Sprintf("%s/%s", dirPath, FileName))
+	err = this.SaveToFile("customer_icon", fmt.Sprintf("%s/%s", dirPath, saveToFile))
 	if err != nil {
 		// 出错则输出错误信息
 		this.Data["json"] = map[string]interface{}{"success": 0, "message": err.Error()}
@@ -88,10 +93,10 @@ func (this *CustomerController) Upload() {
 	// 更新客户头像
 	id, _ := this.GetInt64("id")
 	params := make(map[string]string)
-	params["icon"] = dirDatePrefix + "/" + FileName
+	params["icon"] = dirDatePrefix + "/" + saveToFile
 	models.UpdateCustomer(id, params)
 
-	this.Data["json"] = map[string]interface{}{"success": 1, "message": dirDatePrefix + "/" + FileName}
+	this.Data["json"] = map[string]interface{}{"success": 1, "message": dirDatePrefix + "/" + saveToFile}
 	this.ServeJSON()
 }
 

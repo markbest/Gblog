@@ -1,69 +1,112 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-12">
-            <div class="admin-page-header"><i class="fa fa-home fa-fw"></i>基础设置</div>
+            <div class="admin-page-header">
+                <div class="col-sm-4"><i class="fa fa-home fa-fw"></i>基础设置</div>
+                <div class="col-sm-8 align-right">
+                    <button class="admin-btn-head btn btn-primary" data-toggle="modal" data-target="#add_setting">
+                        <i class="fa fa-plus-circle fa-fw"></i>新增设置
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
     <div class="row">
         <div class="col-lg-12">
             <div class="row">
-                <div class="col-sm-8">
-                    <div class="panel-group" id="accordion">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h4 class="panel-title">
-                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" class="collapsed">网站设置</a>
-                                </h4>
-                            </div>
-                            <div id="collapseOne" class="panel-collapse collapse in" aria-expanded="true">
-                                <div class="panel-body">
-                                    <div class="admin-panel-body">
-                                        <form action="/admin/config/multiupdate" method="post">
-                                            <input type="hidden" name="_xsrf" value="{{.xsrf_token}}">
-                                            {{range $id, $config := .configs}}
-                                            <div class="form-group">
-                                                <label>{{$config.Name}}：</label>
-                                                <input type="hidden" name="id" class="form-control" required="required" value="{{$config.Id}}">
-                                                <input type="text" name="value" class="form-control" required="required" value="{{$config.Value}}">
+                <div class="col-sm-12">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th class="col-sm-1">#</th>
+                            <th class="col-sm-2">配置标题</th>
+                            <th class="col-sm-1">配置路径</th>
+                            <th class="col-sm-4">配置值</th>
+                            <th class="col-sm-1">创建时间</th>
+                            <th class="col-sm-2"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {{range $id, $config := .configs}}
+                        <tr>
+                            <td>{{$config.Id}}</td>
+                            <td>{{$config.Name}}</td>
+                            <td>{{$config.Path}}</td>
+                            <td>{{$config.Value}}</td>
+                            <td>{{date $config.Created_at "m-d H:i"}}</td>
+                            <td class="center">
+                                <button type="button" data-toggle="modal" data-target="#edit_config_{{$config.Id}}" class="admin-btn btn btn-success">
+                                    <i class="fa fa-pencil fa-fw"></i>编辑</a>
+                                </button>
+                                <form action="/admin/config/{{$config.Id}}" method="POST" style="display: inline;">
+                                    <input name="_method" type="hidden" value="DELETE">
+                                    <input type="hidden" name="_xsrf" value="{{$.xsrf_token}}">
+                                    <button type="button" class="admin-btn btn btn-danger del_btn"><i class="fa fa-trash fa-fw"></i>删除</button>
+                                </form>
+                            </td>
+                            <div class="modal fade" id="edit_config_{{$config.Id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                            <h4 class="modal-title" id="myModalLabel">{{$config.Name}}</h4>
+                                        </div>
+                                        <form action="/admin/config/{{$config.Id}}" method="post">
+                                            <input type="hidden" name="_xsrf" value="{{$.xsrf_token}}">
+                                            <div class="modal-body">
+                                                <div class="form-group">
+                                                    <label>配置标题：</label>
+                                                    <input type="text" name="name" class="form-control" required="required" value="{{$config.Name}}">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>配置路径：</label>
+                                                    <input type="text" name="path" class="form-control" required="required" value="{{$config.Path}}">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>配置值：</label>
+                                                    <input type="text" name="value" class="form-control" required="required" value="{{$config.Value}}">
+                                                </div>
                                             </div>
-                                            {{end}}
-                                            <button type="submit" class="admin-btn btn btn-success">保存设置</button>
-                                            <button type="button" class="admin-btn btn btn-primary" data-toggle="modal" data-target="#add_setting">新增设置</button>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                                <button type="submit" class="btn btn-primary">保存</button>
+                                            </div>
                                         </form>
                                     </div>
                                 </div>
-
-                                <div class="modal fade" id="add_setting" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                                                <h4 class="modal-title" id="myModalLabel">新增设置</h4>
-                                            </div>
-                                            <form action="/admin/config" method="post">
-                                                <input type="hidden" name="_xsrf" value="{{.xsrf_token}}">
-                                                <div class="modal-body">
-                                                    <div class="form-group">
-                                                        <label>名称：</label>
-                                                        <input type="text" name="name" class="form-control" required="required" value="">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label>编码：</label>
-                                                        <input type="text" name="path" class="form-control" required="required" value="">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label>值：</label>
-                                                        <input type="text" name="value" class="form-control" required="required" value="">
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                                                    <button type="submit" class="btn btn-primary">保存</button>
-                                                </div>
-                                            </form>
+                            </div>
+                        </tr>
+                        {{end}}
+                        </tbody>
+                    </table>
+                    <div class="modal fade" id="add_setting" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                    <h4 class="modal-title" id="myModalLabel">新增设置</h4>
+                                </div>
+                                <form action="/admin/config" method="post">
+                                    <input type="hidden" name="_xsrf" value="{{.xsrf_token}}">
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                            <label>配置标题：</label>
+                                            <input type="text" name="name" class="form-control" required="required" value="">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>配置路径：</label>
+                                            <input type="text" name="path" class="form-control" required="required" value="">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>配置值：</label>
+                                            <input type="text" name="value" class="form-control" required="required" value="">
                                         </div>
                                     </div>
-                                </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                        <button type="submit" class="btn btn-primary">保存</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>

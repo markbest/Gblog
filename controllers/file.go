@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"blog/models"
+	"blog/utils"
 	"fmt"
 	"path"
 	"time"
@@ -37,7 +38,7 @@ func (this *FileController) FileDownload() {
 	//文件详情
 	id, _ := this.GetInt64(":id")
 	file := models.GetFileInfo(id)
-	this.Ctx.Output.Download("static/uploads/" + file.Link)
+	this.Ctx.Output.Download("static/uploads/" + file.Link, file.Name)
 }
 
 type AdminFileController struct {
@@ -90,10 +91,13 @@ func (this *AdminFileController) AdminFileUpload() {
 	dirDatePrefix := "file/" + time.Unix(time.Now().Unix(), 0).Format("2006/01/02")
 	dirPath := "./static/uploads/" + dirDatePrefix
 	os.MkdirAll(dirPath, 0777)
+
 	// 设置保存文件名
 	FileName := h.Filename
+	saveToFile := string(utils.Krand(8, utils.KC_RAND_KIND_ALL)) + path.Ext(FileName)
+
 	// 将文件保存到服务器中
-	err = this.SaveToFile("file", fmt.Sprintf("%s/%s", dirPath, FileName))
+	err = this.SaveToFile("file", fmt.Sprintf("%s/%s", dirPath, saveToFile))
 	if err != nil {
 		// 出错则输出错误信息
 		this.Data["json"] = map[string]interface{}{"success": 0, "message": err.Error()}
@@ -113,7 +117,7 @@ func (this *AdminFileController) AdminFileUpload() {
 	}
 
 	file.Type = path.Ext(FileName)
-	file.Link = dirDatePrefix + "/" + FileName
+	file.Link = dirDatePrefix + "/" + saveToFile
 	models.InsertFile(&file)
 
 	this.Data["json"] = map[string]interface{}{"success": 1, "message": dirDatePrefix + "/" + FileName}

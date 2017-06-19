@@ -27,7 +27,8 @@ func (this *ArticleController) GetInfo() {
 	} else {
 		article = models.GetArticleInfo(article_id)
 		if str, err := json.Marshal(article); err == nil {
-			redis.Put(cache_tag, string(str), 24 * time.Hour)
+			cache_time := utils.StringToInt64(this.config["web_cache_time"])
+			redis.Put(cache_tag, string(str), time.Duration(cache_time) * time.Hour)
 		}
 	}
 
@@ -89,6 +90,11 @@ func (this *AdminArticleController) UpdateArticle() {
 			params["cat_id"] = this.GetString("cat_id")
 			params["user_id"] = "1"
 			models.UpdateArticle(id, params)
+
+			//删除文章的缓存
+			redis := utils.GetRedisClient()
+			cache_tag := "article-" + strconv.FormatInt(id,10)
+			redis.Delete(cache_tag)
 		}
 		this.Redirect("/admin/article", 302)
 	}

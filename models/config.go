@@ -3,7 +3,6 @@ package models
 import (
 	"time"
 	"github.com/astaxie/beego/orm"
-	"strconv"
 )
 
 type Config struct {
@@ -42,16 +41,46 @@ func InsertConfig(c *Config) (id int64, err error) {
 	return id, err
 }
 
-func MultiUpdateConfig(params map[string]string) {
+func UpdateConfig(id int64, params map[string]string) error{
 	o := orm.NewOrm()
 
-	for k, v := range params {
-		id, _ := strconv.ParseInt(k, 10, 64)
-		config := Config{Id: id}
-		if o.Read(&config) == nil {
-			config.Value = v
-			o.Update(&config)
+	config := Config{Id: id}
+	if o.Read(&config) == nil {
+		for k, v := range params {
+			if k == "name" {
+				config.Name = v
+			}
+			if k == "path" {
+				config.Path = v
+			}
+			if k == "value" {
+				config.Value = v
+			}
 		}
+		_, err := o.Update(&config)
+		return err
 	}
-	return
+	return nil
+}
+
+func DeleteConfig(id int64) error {
+	o := orm.NewOrm()
+	config := Config{Id: id}
+	if _, err := o.Delete(&config); err != nil {
+		return err
+	}
+	return nil
+}
+
+func GetConfigs() (map[string]string) {
+	o := orm.NewOrm()
+
+	var configs []Config
+	l := make(map[string]string)
+	qs := o.QueryTable(new(Config))
+	qs.All(&configs)
+	for _, v := range configs {
+		l[v.Path] = v.Value
+	}
+	return l
 }

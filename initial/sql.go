@@ -12,7 +12,7 @@ func InitSql() {
 	dbuser := beego.AppConfig.String("dbuser")
 	dbpassword := beego.AppConfig.String("dbpassword")
 	db := beego.AppConfig.String("dbdatabase")
-	conn := dbuser + ":" + dbpassword + "@tcp(" + dbhost + ":" + dbport + ")/" + db + "?charset=utf8"
+	conn := dbuser + ":" + dbpassword + "@tcp(" + dbhost + ":" + dbport + ")/" + db + "?charset=utf8&loc=Asia%2FShanghai"
 
 	orm.RegisterDriver("mysql", orm.DRMySQL)
 	orm.RegisterDataBase("default", "mysql", conn)

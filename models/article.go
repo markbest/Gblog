@@ -149,7 +149,7 @@ func IncreaseViews(id int64) {
 	article := Article{Id: id}
 	if o.Read(&article) == nil {
 		article.Views = int64(article.Views) + 1
-		o.Update(&article)
+		o.Update(&article, "Views")
 	}
 	return
 }

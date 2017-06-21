@@ -1,4 +1,4 @@
-# golang_blog
+# Gblog
 用beego实现的一个博客程序
 
 # 博客特色

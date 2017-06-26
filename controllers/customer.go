@@ -5,9 +5,9 @@ import (
 	"blog/utils"
 	"fmt"
 	"github.com/astaxie/beego"
-	"time"
 	"os"
 	"path"
+	"time"
 )
 
 type CustomerController struct {
@@ -15,7 +15,7 @@ type CustomerController struct {
 }
 
 // @router /customer/home [get]
-func (this *CustomerController) Index()  {
+func (this *CustomerController) Index() {
 	this.Layout = "layout/frontend/single.tpl"
 	this.TplName = "customer.tpl"
 }

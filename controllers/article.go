@@ -20,7 +20,7 @@ func (this *ArticleController) GetInfo() {
 	//文章详情（如果有缓存，先从缓存中取数据）
 	var article models.Article
 	article_id, _ := this.GetInt64(":id")
-	cache_tag := "article-" + strconv.FormatInt(article_id,10)
+	cache_tag := "article-" + strconv.FormatInt(article_id, 10)
 	if redis.IsExist(cache_tag) {
 		cache_content := string(redis.Get(cache_tag).([]uint8))
 		json.Unmarshal([]byte(cache_content), &article)
@@ -28,7 +28,7 @@ func (this *ArticleController) GetInfo() {
 		article = models.GetArticleInfo(article_id)
 		if str, err := json.Marshal(article); err == nil {
 			cache_time := utils.StringToInt64(this.config["web_cache_time"])
-			redis.Put(cache_tag, string(str), time.Duration(cache_time) * time.Hour)
+			redis.Put(cache_tag, string(str), time.Duration(cache_time)*time.Second)
 		}
 	}
 
@@ -54,11 +54,11 @@ func (this *AdminArticleController) Index() {
 func (this *AdminArticleController) ListArticles() {
 	//文章列表
 	var pageSize int = 30
-	page, err := this.GetInt("page")//获取页数
+	page, err := this.GetInt("page") //获取页数
 	if err != nil && page < 1 {
 		page = 1
 	}
-	articles, num := models.GetLatestArticles(pageSize, (page - 1) * pageSize)
+	articles, num := models.GetLatestArticles(pageSize, (page-1)*pageSize)
 
 	//分页
 	var pages models.Page = models.NewPage(page, pageSize, int(num), "/admin/article")
@@ -93,7 +93,7 @@ func (this *AdminArticleController) UpdateArticle() {
 
 			//删除文章的缓存
 			redis := utils.GetRedisClient()
-			cache_tag := "article-" + strconv.FormatInt(id,10)
+			cache_tag := "article-" + strconv.FormatInt(id, 10)
 			redis.Delete(cache_tag)
 		}
 		this.Redirect("/admin/article", 302)

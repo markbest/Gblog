@@ -1,30 +1,30 @@
 package models
 
 import (
-	"time"
-	"github.com/astaxie/beego/orm"
-	"errors"
 	"blog/utils"
+	"errors"
+	"github.com/astaxie/beego/orm"
+	"time"
 )
 
 type User struct {
-	Id    		int64   `orm:"auto" form:"-"`
-	Name  		string  `orm:"size(64)" form:"name" valid:"Required;"`
-	Email  		string  `orm:"size(64);unique" form:"email" valid:"Required;Email"`
-	Password	string  `orm:"size(32)" form:"password" valid:"Required"`
-	Created_at      time.Time `orm:"auto_now_add;type(datetime)" form:"-"`
-	Updated_at      time.Time `orm:"auto_now;type(datetime)" form:"-"`
+	Id         int64     `orm:"auto" form:"-"`
+	Name       string    `orm:"size(64)" form:"name" valid:"Required;"`
+	Email      string    `orm:"size(64);unique" form:"email" valid:"Required;Email"`
+	Password   string    `orm:"size(32)" form:"password" valid:"Required"`
+	Created_at time.Time `orm:"auto_now_add;type(datetime)" form:"-"`
+	Updated_at time.Time `orm:"auto_now;type(datetime)" form:"-"`
 }
 
-func (u *User) TableName() string{
+func (u *User) TableName() string {
 	return "users"
 }
 
-func init(){
+func init() {
 	orm.RegisterModel(new(User))
 }
 
-func AdminAuth(email string, password string) (User, error){
+func AdminAuth(email string, password string) (User, error) {
 	o := orm.NewOrm()
 	qs := o.QueryTable(new(User))
 

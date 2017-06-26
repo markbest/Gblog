@@ -1,48 +1,48 @@
 package models
 
 import (
-	"time"
 	"github.com/astaxie/beego/orm"
-	"strings"
 	"strconv"
+	"strings"
+	"time"
 )
 
 type Article struct {
-	Id    		int64 `orm:"auto" form:"-"`
-	Title  		string `orm:"size(128)" form:"title" valid:"Required;"`
-	Slug  		string `orm:"size(128)" form:"slug" valid:"Required;"`
-	Summary		string `orm:"size(256)" form:"summary" valid:"Required;"`
-	Body		string `orm:"content;type(text);null" form:"body" valid:"Required;"`
-	Image           string `orm:"size(128)" form:"-"`
-	Views		int64  `form:"-"`
-	User		*User  `orm:"rel(fk)" form:"-"`
-	Cat		*Category `orm:"rel(fk)" form:"-"`
-	Created_at      time.Time `orm:"auto_now_add;type(datetime)" form:"-"`
-	Updated_at      time.Time `orm:"auto_now;type(datetime)" form:"-"`
+	Id         int64     `orm:"auto" form:"-"`
+	Title      string    `orm:"size(128)" form:"title" valid:"Required;"`
+	Slug       string    `orm:"size(128)" form:"slug" valid:"Required;"`
+	Summary    string    `orm:"size(256)" form:"summary" valid:"Required;"`
+	Body       string    `orm:"content;type(text);null" form:"body" valid:"Required;"`
+	Image      string    `orm:"size(128)" form:"-"`
+	Views      int64     `form:"-"`
+	User       *User     `orm:"rel(fk)" form:"-"`
+	Cat        *Category `orm:"rel(fk)" form:"-"`
+	Created_at time.Time `orm:"auto_now_add;type(datetime)" form:"-"`
+	Updated_at time.Time `orm:"auto_now;type(datetime)" form:"-"`
 }
 
-func (a *Article) TableName() string{
+func (a *Article) TableName() string {
 	return "articles"
 }
 
-func init(){
+func init() {
 	orm.RegisterModel(new(Article))
 }
 
-func GetLatestArticles(page int, offset int) (a []Article, count int64){
+func GetLatestArticles(page int, offset int) (a []Article, count int64) {
 	o := orm.NewOrm()
 
 	var articles []Article
 	qs := o.QueryTable(new(Article))
 	count, _ = qs.Count()
-	qs.OrderBy("-id").RelatedSel().Limit(page, offset).All(&articles, "Id", "Title", "Summary", "Slug", "Views", "Created_at")
+	qs.OrderBy("-id").RelatedSel().Limit(page, offset).All(&articles, "Id", "Title", "Summary", "Slug", "Body", "Views", "Created_at")
 	for _, v := range articles {
 		a = append(a, v)
 	}
 	return a, count
 }
 
-func GetTopViewArticles() (a []Article){
+func GetTopViewArticles() (a []Article) {
 	o := orm.NewOrm()
 
 	var articles []Article
@@ -54,7 +54,7 @@ func GetTopViewArticles() (a []Article){
 	return a
 }
 
-func GetSearchArticles(keyword string, page int, offset int) (a []Article, count int64){
+func GetSearchArticles(keyword string, page int, offset int) (a []Article, count int64) {
 	o := orm.NewOrm()
 
 	var articles []Article
@@ -67,7 +67,7 @@ func GetSearchArticles(keyword string, page int, offset int) (a []Article, count
 	return a, count
 }
 
-func GetArticleTags() (t []map[string]int64){
+func GetArticleTags() (t []map[string]int64) {
 	o := orm.NewOrm()
 
 	var articles []Article
@@ -85,7 +85,7 @@ func GetArticleTags() (t []map[string]int64){
 	return t
 }
 
-func GetArticleInfo(id int64) (a Article){
+func GetArticleInfo(id int64) (a Article) {
 	o := orm.NewOrm()
 
 	qs := o.QueryTable(new(Article))
@@ -93,13 +93,13 @@ func GetArticleInfo(id int64) (a Article){
 	return a
 }
 
-func InsertArticle(a *Article) (id int64, err error){
+func InsertArticle(a *Article) (id int64, err error) {
 	o := orm.NewOrm()
 	id, err = o.Insert(a)
 	return id, err
 }
 
-func UpdateArticle(id int64, params map[string]string){
+func UpdateArticle(id int64, params map[string]string) {
 	o := orm.NewOrm()
 
 	article := Article{Id: id}

@@ -4,9 +4,9 @@ import (
 	"blog/models"
 	"blog/utils"
 	"fmt"
-	"time"
 	"os"
 	"path"
+	"time"
 )
 
 type AdminPictureController struct {
@@ -34,7 +34,7 @@ func (this *AdminPictureController) UpdatePicture() {
 	if this.GetString("is_delete") == "1" {
 		models.DeletePicture(id)
 	} else {
-		if this.GetString("note") != ""{
+		if this.GetString("note") != "" {
 			params["note"] = this.GetString("note")
 		}
 		models.UpdatePicture(id, params)
@@ -74,10 +74,10 @@ func (this *AdminPictureController) UploadPicture() {
 	}
 
 	// 上传图片
-	picture := models.Picture{}
+	picture := &models.Picture{}
 	picture.Img_url = dirDatePrefix + "/" + saveToFile
 	picture.Note = ""
-	models.InsertPicture(&picture)
+	models.InsertPicture(picture)
 
 	this.Data["json"] = map[string]interface{}{"success": 1, "message": dirDatePrefix + "/" + saveToFile}
 	this.ServeJSON()
@@ -115,10 +115,10 @@ func (this *AdminPictureController) UploadMarkdownPicture() {
 	}
 
 	// 上传图片
-	picture := models.Picture{}
+	picture := &models.Picture{}
 	picture.Img_url = dirDatePrefix + "/" + saveToFile
 	picture.Note = ""
-	models.InsertPicture(&picture)
+	models.InsertPicture(picture)
 
 	this.Data["json"] = map[string]interface{}{"success": 1, "message": "success upoload", "url": "/static/uploads/" + dirDatePrefix + "/" + saveToFile}
 	this.ServeJSON()

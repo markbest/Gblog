@@ -2,30 +2,30 @@ package models
 
 import (
 	"github.com/astaxie/beego/orm"
-	"time"
 	"strconv"
+	"time"
 )
 
 type File struct {
-	Id    		int64 `orm:"auto"`
-	Cat		*Category  `orm:"rel(fk)"`
-	Title  		string `orm:"size(64)"`
-	Name 		string `orm:"size(64)"`
-	Size            int64
-	Link            string `orm:"size(128)"`
-	Type            string `orm:"size(64)"`
-	Created_at      time.Time `orm:"auto_now_add;type(datetime)"`
+	Id         int64     `orm:"auto"`
+	Cat        *Category `orm:"rel(fk)"`
+	Title      string    `orm:"size(64)"`
+	Name       string    `orm:"size(64)"`
+	Size       int64
+	Link       string    `orm:"size(128)"`
+	Type       string    `orm:"size(64)"`
+	Created_at time.Time `orm:"auto_now_add;type(datetime)"`
 }
 
-func (f *File) TableName() string{
+func (f *File) TableName() string {
 	return "files"
 }
 
-func init(){
+func init() {
 	orm.RegisterModel(new(File))
 }
 
-func GetFilesList(page int, offset int) (f []File, count int64){
+func GetFilesList(page int, offset int) (f []File, count int64) {
 	o := orm.NewOrm()
 
 	var files []File
@@ -38,7 +38,7 @@ func GetFilesList(page int, offset int) (f []File, count int64){
 	return f, count
 }
 
-func GetFileInfo(id int64) (f File){
+func GetFileInfo(id int64) (f File) {
 	o := orm.NewOrm()
 	qs := o.QueryTable(new(File))
 	qs.Filter("id", id).One(&f)

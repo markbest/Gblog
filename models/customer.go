@@ -1,28 +1,28 @@
 package models
 
 import (
+	"blog/utils"
+	"errors"
 	"github.com/astaxie/beego/orm"
 	"time"
-	"errors"
-	"blog/utils"
 )
 
 type Customer struct {
-	Id    		int64   `orm:"auto" form:"-"`
-	Name  		string  `orm:"size(64)" form:"name" valid:"Required;"`
-	Email  		string  `orm:"size(64);unique" form:"email" valid:"Required;Email"`
-	Password	string  `orm:"size(32)" form:"password" valid:"Required"`
-	Repassword      string  `orm:"-" form:"repassword" valid:"Required"`
-	Icon		string  `orm:"size(128)" form:"-"`
-	Created_at      time.Time `orm:"auto_now_add;type(datetime)" form:"-"`
-	Updated_at      time.Time `orm:"auto_now;type(datetime)" form:"-"`
+	Id         int64     `orm:"auto" form:"-"`
+	Name       string    `orm:"size(64)" form:"name" valid:"Required;"`
+	Email      string    `orm:"size(64);unique" form:"email" valid:"Required;Email"`
+	Password   string    `orm:"size(32)" form:"password" valid:"Required"`
+	Repassword string    `orm:"-" form:"repassword" valid:"Required"`
+	Icon       string    `orm:"size(128)" form:"-"`
+	Created_at time.Time `orm:"auto_now_add;type(datetime)" form:"-"`
+	Updated_at time.Time `orm:"auto_now;type(datetime)" form:"-"`
 }
 
-func (c *Customer) TableName() string{
+func (c *Customer) TableName() string {
 	return "customers"
 }
 
-func init(){
+func init() {
 	orm.RegisterModel(new(Customer))
 }
 
@@ -67,7 +67,7 @@ func GetCustomerInfo(id interface{}) (c Customer) {
 	return c
 }
 
-func CustomerLogin(email string, password string) (Customer, error){
+func CustomerLogin(email string, password string) (Customer, error) {
 	o := orm.NewOrm()
 	qs := o.QueryTable(new(Customer))
 

@@ -1,27 +1,26 @@
 package models
 
 import (
-	"time"
 	"github.com/astaxie/beego/orm"
+	"time"
 )
 
 type Config struct {
-	Id    		int64 `orm:"auto" form:"-"`
-	Name  		string `orm:"size(255)" form:"name" valid:"Required;"`
-	Path  		string `orm:"size(255)" form:"path" valid:"Required;"`
-	Value		string `orm:"size(255)" form:"value" valid:"Required;"`
-	Created_at      time.Time `orm:"auto_now_add;type(datetime)" form:"-"`
-	Updated_at      time.Time `orm:"auto_now;type(datetime)" form:"-"`
+	Id         int64     `orm:"auto" form:"-"`
+	Name       string    `orm:"size(255)" form:"name" valid:"Required;"`
+	Path       string    `orm:"size(255)" form:"path" valid:"Required;"`
+	Value      string    `orm:"size(255)" form:"value" valid:"Required;"`
+	Created_at time.Time `orm:"auto_now_add;type(datetime)" form:"-"`
+	Updated_at time.Time `orm:"auto_now;type(datetime)" form:"-"`
 }
 
 func (c *Config) TableName() string {
 	return "configs"
 }
 
-func init(){
+func init() {
 	orm.RegisterModel(new(Config))
 }
-
 
 func GetListConfig() (c []Config) {
 	o := orm.NewOrm()
@@ -41,7 +40,7 @@ func InsertConfig(c *Config) (id int64, err error) {
 	return id, err
 }
 
-func UpdateConfig(id int64, params map[string]string) error{
+func UpdateConfig(id int64, params map[string]string) error {
 	o := orm.NewOrm()
 
 	config := Config{Id: id}
@@ -72,7 +71,7 @@ func DeleteConfig(id int64) error {
 	return nil
 }
 
-func GetConfigs() (map[string]string) {
+func GetConfigs() map[string]string {
 	o := orm.NewOrm()
 
 	var configs []Config

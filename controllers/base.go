@@ -1,17 +1,17 @@
 package controllers
 
 import (
-	"github.com/astaxie/beego"
 	"blog/models"
 	"blog/utils"
 	"encoding/json"
+	"github.com/astaxie/beego"
 	"time"
 )
 
 type BaseController struct {
 	beego.Controller
 	isLogin bool
-	config map[string]string
+	config  map[string]string
 }
 
 func (this *BaseController) Prepare() {
@@ -29,7 +29,7 @@ func (this *BaseController) Prepare() {
 		config = models.GetConfigs()
 		cache_time = utils.StringToInt64(config["web_cache_time"])
 		if str, err := json.Marshal(config); err == nil {
-			redis.Put("configs", string(str), time.Duration(cache_time) * time.Second)
+			redis.Put("configs", string(str), time.Duration(cache_time)*time.Second)
 		}
 	}
 	this.config = config
@@ -52,7 +52,7 @@ func (this *BaseController) Prepare() {
 	} else {
 		allCategory = models.GetCategoryList()
 		if str, err := json.Marshal(allCategory); err == nil {
-			redis.Put("allCategory", string(str), time.Duration(cache_time) * time.Second)
+			redis.Put("allCategory", string(str), time.Duration(cache_time)*time.Second)
 		}
 	}
 
@@ -64,7 +64,7 @@ func (this *BaseController) Prepare() {
 	} else {
 		latest, _ = models.GetLatestArticles(8, 0)
 		if str, err := json.Marshal(latest); err == nil {
-			redis.Put("latest", string(str), time.Duration(cache_time) * time.Second)
+			redis.Put("latest", string(str), time.Duration(cache_time)*time.Second)
 		}
 	}
 
@@ -74,7 +74,7 @@ func (this *BaseController) Prepare() {
 	} else {
 		hot = models.GetTopViewArticles()
 		if str, err := json.Marshal(hot); err == nil {
-			redis.Put("hot", string(str), time.Duration(cache_time) * time.Second)
+			redis.Put("hot", string(str), time.Duration(cache_time)*time.Second)
 		}
 	}
 
@@ -85,7 +85,7 @@ func (this *BaseController) Prepare() {
 	} else {
 		tags = models.GetArticleTags()
 		if str, err := json.Marshal(tags); err == nil {
-			redis.Put("tags", string(str), time.Duration(cache_time) * time.Second)
+			redis.Put("tags", string(str), time.Duration(cache_time)*time.Second)
 		}
 	}
 
@@ -123,4 +123,3 @@ func (this *AdminBaseController) Prepare() {
 	this.Data["isAdminLogin"] = this.isAdminLogin
 	this.Data["loginUser"] = loginUser
 }
-

@@ -4,9 +4,9 @@ import (
 	"blog/models"
 	"blog/utils"
 	"fmt"
+	"os"
 	"path"
 	"time"
-	"os"
 )
 
 type FileController struct {
@@ -17,11 +17,11 @@ type FileController struct {
 func (this *FileController) FileList() {
 	//文件列表
 	var pageSize int = 20
-	page, err := this.GetInt("page")//获取页数
+	page, err := this.GetInt("page") //获取页数
 	if err != nil && page < 1 {
 		page = 1
 	}
-	articles, num := models.GetFilesList(pageSize, (page - 1) * pageSize)
+	articles, num := models.GetFilesList(pageSize, (page-1)*pageSize)
 
 	//分页
 	var pages models.Page = models.NewPage(page, pageSize, int(num), "/category/files")
@@ -38,7 +38,7 @@ func (this *FileController) FileDownload() {
 	//文件详情
 	id, _ := this.GetInt64(":id")
 	file := models.GetFileInfo(id)
-	this.Ctx.Output.Download("static/uploads/" + file.Link, file.Name)
+	this.Ctx.Output.Download("static/uploads/"+file.Link, file.Name)
 }
 
 type AdminFileController struct {
@@ -49,11 +49,11 @@ type AdminFileController struct {
 func (this *AdminFileController) AdminFileList() {
 	//文件列表
 	var pageSize int = 30
-	page, err := this.GetInt("page")//获取页数
+	page, err := this.GetInt("page") //获取页数
 	if err != nil && page < 1 {
 		page = 1
 	}
-	files, num := models.GetFilesList(pageSize, (page - 1) * pageSize)
+	files, num := models.GetFilesList(pageSize, (page-1)*pageSize)
 
 	//分类列表
 	allCategory := models.GetCategoryList()
@@ -107,7 +107,7 @@ func (this *AdminFileController) AdminFileUpload() {
 
 	// 上传资料文件
 	default_file_category := models.GetCategoryInfo(11)
-	file := models.File{}
+	file := &models.File{}
 	file.Title = FileName
 	file.Name = FileName
 	file.Cat = &default_file_category
@@ -118,7 +118,7 @@ func (this *AdminFileController) AdminFileUpload() {
 
 	file.Type = path.Ext(FileName)
 	file.Link = dirDatePrefix + "/" + saveToFile
-	models.InsertFile(&file)
+	models.InsertFile(file)
 
 	this.Data["json"] = map[string]interface{}{"success": 1, "message": dirDatePrefix + "/" + FileName}
 	this.ServeJSON()

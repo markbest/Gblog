@@ -13,15 +13,15 @@ type CategoryController struct {
 func (this *CategoryController) ListArticle() {
 	//文章列表
 	pageSize := utils.StringToInt(this.config["web_perpage"])
-	page, err := this.GetInt("page")//获取页数
+	page, err := this.GetInt("page") //获取页数
 	if err != nil && page < 1 {
 		page = 1
 	}
 	category := models.GetCategoryInfoByTitle(this.GetString(":title"))
-	articles, num := models.GetCategoryArticles(category.Id, pageSize, (page - 1) * pageSize)
+	articles, num := models.GetCategoryArticles(category.Id, pageSize, (page-1)*pageSize)
 
 	//分页
-	var pages models.Page = models.NewPage(page, pageSize, int(num), "/category/" + this.GetString(":title"))
+	var pages models.Page = models.NewPage(page, pageSize, int(num), "/category/"+this.GetString(":title"))
 
 	//模板变量
 	this.Data["article"] = articles

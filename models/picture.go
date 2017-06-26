@@ -1,27 +1,27 @@
 package models
 
 import (
-	"time"
 	"github.com/astaxie/beego/orm"
+	"time"
 )
 
 type Picture struct {
-	Id    		int64 `orm:"auto"`
-	Img_url  	string `orm:"size(128)"`
-	Note            string `orm:"size(128)"`
-	Created_at      time.Time `orm:"auto_now_add;type(datetime)"`
-	Updated_at      time.Time `orm:"auto_now;type(datetime)"`
+	Id         int64     `orm:"auto"`
+	Img_url    string    `orm:"size(128)"`
+	Note       string    `orm:"size(128)"`
+	Created_at time.Time `orm:"auto_now_add;type(datetime)"`
+	Updated_at time.Time `orm:"auto_now;type(datetime)"`
 }
 
 func (p *Picture) TableName() string {
 	return "pictures"
 }
 
-func init(){
+func init() {
 	orm.RegisterModel(new(Picture))
 }
 
-func GetPicturesList() (p []Picture){
+func GetPicturesList() (p []Picture) {
 	o := orm.NewOrm()
 
 	var pictures []Picture
@@ -56,7 +56,7 @@ func UpdatePicture(id int64, params map[string]string) {
 	return
 }
 
-func DeletePicture(id int64) (err error){
+func DeletePicture(id int64) (err error) {
 	o := orm.NewOrm()
 	picture := Picture{Id: id}
 	if _, err := o.Delete(&picture); err != nil {

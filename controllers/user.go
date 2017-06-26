@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"github.com/astaxie/beego"
 	"blog/models"
+	"github.com/astaxie/beego"
 )
 
 type AdminUserController struct {
@@ -43,11 +43,11 @@ func (this *AdminUserController) Logout() {
 func (this *AdminUserController) ListUsers() {
 	//用户列表
 	var pageSize int = 30
-	page, err := this.GetInt("page")//获取页数
+	page, err := this.GetInt("page") //获取页数
 	if err != nil && page < 1 {
 		page = 1
 	}
-	users, num := models.GetAllUserList(pageSize, (page - 1) * pageSize)
+	users, num := models.GetAllUserList(pageSize, (page-1)*pageSize)
 
 	//分页
 	var pages models.Page = models.NewPage(page, pageSize, int(num), "/admin/user")

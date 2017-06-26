@@ -1,8 +1,8 @@
 package initial
 
 import (
-	"github.com/astaxie/beego"
 	"blog/utils"
+	"github.com/astaxie/beego"
 )
 
 func InitTplFunc() {

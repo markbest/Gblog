@@ -1,27 +1,28 @@
 package models
 
 import (
+	"blog/api"
 	"github.com/astaxie/beego/orm"
-	"time"
 	"strconv"
+	"time"
 )
 
 type Category struct {
-	Id    		int64 `orm:"auto" form:"-"`
-	Title  		string `orm:"size(256)" form:"title" valid:"Required;"`
-	Parent_id  	int64  `form:"parent_id" valid:"Required;"`
-	Sort       	int64  `form:"sort" valid:"Required;"`
-	Created_at      time.Time `orm:"auto_now_add;type(datetime)" form:"-"`
-	Updated_at      time.Time `orm:"auto_now;type(datetime)" form:"-"`
-	Count_articles  int64 `orm:"-" form:"-" json:"count"`
-	Sub_category    []Category `orm:"-" form:"-"`
+	Id             int64      `orm:"auto" form:"-"`
+	Title          string     `orm:"size(256)" form:"title" valid:"Required;"`
+	Parent_id      int64      `form:"parent_id" valid:"Required;"`
+	Sort           int64      `form:"sort" valid:"Required;"`
+	Created_at     time.Time  `orm:"auto_now_add;type(datetime)" form:"-"`
+	Updated_at     time.Time  `orm:"auto_now;type(datetime)" form:"-"`
+	Count_articles int64      `orm:"-" form:"-" json:"count"`
+	Sub_category   []Category `orm:"-" form:"-"`
 }
 
-func (c *Category) TableName() string{
+func (c *Category) TableName() string {
 	return "categories"
 }
 
-func init(){
+func init() {
 	orm.RegisterModel(new(Category))
 }
 
@@ -39,7 +40,7 @@ func GetSubCategory(parent_id int64) (c []Category) {
 	return c
 }
 
-func GetCategoryList() (c []Category){
+func GetCategoryList() (c []Category) {
 	o := orm.NewOrm()
 	qs := o.QueryTable(new(Category))
 
@@ -62,7 +63,7 @@ func GetCategoryList() (c []Category){
 	return c
 }
 
-func GetLayerCategoryList() (c []Category){
+func GetLayerCategoryList() (c []Category) {
 	o := orm.NewOrm()
 	qs := o.QueryTable(new(Category))
 
@@ -93,7 +94,7 @@ func InsertCategory(c *Category) (id int64, err error) {
 	return id, err
 }
 
-func DeleteCategory(id int64) error{
+func DeleteCategory(id int64) error {
 	o := orm.NewOrm()
 	category := Category{Id: id}
 	if _, err := o.Delete(&category); err != nil {
@@ -102,7 +103,7 @@ func DeleteCategory(id int64) error{
 	return nil
 }
 
-func UpdateCategory(id int64, params map[string]string) error{
+func UpdateCategory(id int64, params map[string]string) error {
 	o := orm.NewOrm()
 	category := Category{Id: id}
 	if o.Read(&category) == nil {
@@ -125,7 +126,7 @@ func UpdateCategory(id int64, params map[string]string) error{
 	return nil
 }
 
-func GetCategoryInfo(id int64) (c Category){
+func GetCategoryInfo(id int64) (c Category) {
 	o := orm.NewOrm()
 
 	qs := o.QueryTable(new(Category))
@@ -133,10 +134,47 @@ func GetCategoryInfo(id int64) (c Category){
 	return c
 }
 
-func GetCategoryInfoByTitle(title string) (c Category){
+func GetCategoryInfoByTitle(title string) (c Category) {
 	o := orm.NewOrm()
 
 	qs := o.QueryTable(new(Category))
 	qs.Filter("title", title).One(&c)
+	return c
+}
+
+func GetApiCategoryArticles(id int64) (a []api.SubArticle) {
+	o := orm.NewOrm()
+
+	var articles []Article
+	aqs := o.QueryTable(new(Article)).Filter("cat_id", id)
+	aqs.OrderBy("-created_at").All(&articles)
+	for _, v := range articles {
+		article := api.SubArticle{v.Id, v.Title}
+		a = append(a, article)
+	}
+	return a
+}
+
+func GetApiCategoryJson() (c []api.Category) {
+	o := orm.NewOrm()
+	qs := o.QueryTable(new(Category))
+
+	var l []Category
+	qs.Filter("parent_id", 0).OrderBy("sort").All(&l)
+	for _, v := range l {
+		var s []Category
+		var subCategory []api.Category
+		sqs := o.QueryTable(new(Category))
+		sqs.Filter("parent_id", v.Id).OrderBy("sort").All(&s)
+		for _, sub := range s {
+			sub_articles := GetApiCategoryArticles(sub.Id)
+			sub_category := api.Category{sub.Id, sub.Title, sub_articles, nil}
+			subCategory = append(subCategory, sub_category)
+		}
+
+		articles := GetApiCategoryArticles(v.Id)
+		allCategory := api.Category{v.Id, v.Title, articles, subCategory}
+		c = append(c, allCategory)
+	}
 	return c
 }

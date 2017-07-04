@@ -22,8 +22,22 @@ func init() {
 	orm.RunSyncdb("default", false, true)
 }
 
+/* 获取所有已经执行的迁移文件 */
+func GetAllMigrationsFile() (m []string) {
+	var migrations []Migrate
+	o := orm.NewOrm()
+	qs := o.QueryTable(new(Migrate))
+	qs.OrderBy("batch").All(&migrations)
+	if len(migrations) > 0 {
+		for _, v := range migrations {
+			m = append(m, v.Migration)
+		}
+	}
+	return m
+}
+
+/* 获取最后一批操作的migrations */
 func GetLatestMigrationsFile(action string) (batch int64, m []Migrate) {
-	//获取最后一批操作的migrations
 	var migrate []Migrate
 	o := orm.NewOrm()
 	qs := o.QueryTable(new(Migrate))
@@ -48,6 +62,7 @@ func GetLatestMigrationsFile(action string) (batch int64, m []Migrate) {
 	return batch, m
 }
 
+/* 执行迁移文件 */
 func MigrateUp() {
 	batch, m := GetLatestMigrationsFile("up")
 	upsql, _, files := LoadMigrationsFile("up", m)
@@ -76,6 +91,7 @@ func MigrateUp() {
 	}
 }
 
+/* 回滚迁移文件 */
 func MigrateDown() {
 	batch, m := GetLatestMigrationsFile("down")
 	_, downsql, files := LoadMigrationsFile("down", m)
@@ -103,4 +119,27 @@ func MigrateDown() {
 	} else {
 		fmt.Print("no rollback\n")
 	}
+}
+
+func MigrateStatus() {
+	//已经执行的迁移文件
+	files := GetAllMigrationsFile()
+
+	//尚未执行的迁移文件
+	_, m := GetLatestMigrationsFile("up")
+	_, _, others := LoadMigrationsFile("up", m)
+
+	fmt.Println("+-----+----------------------------------------------------------+")
+	fmt.Println("| Ran | Migration                                                |")
+	fmt.Println("+-----+----------------------------------------------------------+")
+
+	for _, v := range files {
+		fmt.Println("|  Y  | " + v)
+	}
+
+	for _, k := range others {
+		fmt.Println("|  N  | " + k)
+	}
+
+	fmt.Println("+-----+----------------------------------------------------------+")
 }

@@ -14,6 +14,7 @@ import (
 const migrate_tpl = "./database/tpl/migrate.sql.tpl"
 const migrate_file_path = "./database/migrations/"
 
+/* 加载迁移模板的内容 */
 func LoadMigrateTpl() ([]byte, error) {
 	f, err := os.Open(migrate_tpl)
 	defer f.Close()
@@ -23,6 +24,7 @@ func LoadMigrateTpl() ([]byte, error) {
 	return ioutil.ReadAll(f)
 }
 
+/* 创建迁移文件 */
 func CreateMigration(name string) {
 	prefix := time.Now().Format("2006_01_02_030405")
 	tpl_content, _ := LoadMigrateTpl()
@@ -39,6 +41,7 @@ func CreateMigration(name string) {
 	fmt.Println("create migrations " + prefix + "_" + name + ".sql successfully")
 }
 
+/* 获取迁移文件的内容以及文件列表 */
 func LoadMigrationsFile(action string, m []Migrate) (migrate_up []string, migrate_down []string, migrations []string) {
 	PthSep := string(os.PathSeparator)
 	files := make([]string, 0)
@@ -75,6 +78,7 @@ func LoadMigrationsFile(action string, m []Migrate) (migrate_up []string, migrat
 	return migrate_up, migrate_down, migrations
 }
 
+/* 获取up和down匹配的迁移文件 */
 func GetMatchMigrations(m []Migrate) []string {
 	files := make([]string, 0)
 	migrations := make([]string, 0)
@@ -101,6 +105,7 @@ func GetMatchMigrations(m []Migrate) []string {
 	return matchs
 }
 
+/* 解析迁移文件的SQL语句 */
 func ParseMigrationsFile(name string) (up []string, down []string) {
 	isUp := false
 	isDown := false

@@ -14,6 +14,7 @@
 - ./m create filename(创建迁移文件)
 - ./m up(执行迁移)
 - ./m down(回滚迁移）
+- ./m status(查看迁移文件的状态) 
 
 # 安装使用
 - 从[github](https://github.com/markbest/golang_blog)上下载源代码

@@ -142,14 +142,16 @@ func GetCategoryInfoByTitle(title string) (c Category) {
 	return c
 }
 
-func GetApiCategoryArticles(id int64) (a []api.SubArticle) {
+func GetApiCategoryArticles(id int64) (a []api.Article) {
 	o := orm.NewOrm()
 
 	var articles []Article
 	aqs := o.QueryTable(new(Article)).Filter("cat_id", id)
 	aqs.OrderBy("-created_at").All(&articles)
 	for _, v := range articles {
-		article := api.SubArticle{v.Id, v.Title}
+		var article api.Article
+		article.Id = v.Id
+		article.Title = v.Title
 		a = append(a, article)
 	}
 	return a

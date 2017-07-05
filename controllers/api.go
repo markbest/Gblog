@@ -42,10 +42,10 @@ func (this *ApiController) GetArticleList() {
 		art.Summary = v.Summary
 		art.Views = v.Views
 		art.User = v.User.Name
-		art.Created_at = v.Created_at
-		art.Updated_at = v.Updated_at
+		art.Created_at = &v.Created_at
+		art.Updated_at = &v.Updated_at
 		data = append(data, art)
 	}
-	this.Data["json"] = map[string]interface{}{"total": total, "per_page": per_page, "page": page, "data": data}
+	this.Data["json"] = map[string]interface{}{"Total": total, "Per_page": per_page, "Page": page, "Data": data}
 	this.ServeJSON()
 }

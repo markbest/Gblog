@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"net/url"
 )
 
 const (
@@ -28,6 +29,12 @@ func StringToInt(str string) (id int) {
 func StringToInt64(str string) (id int64) {
 	id, _ = strconv.ParseInt(str, 10, 64)
 	return id
+}
+
+//int64类型转化为字符串类型
+func Int64ToString(num int64) (str string){
+	str = strconv.FormatInt(num, 10)
+	return str
 }
 
 //md5方法
@@ -65,9 +72,10 @@ func Krand(size int, kind int) []byte {
 //检查是否是当前URL
 func IsActive(request_url string, target_url string) bool {
 	var is_active bool
+	url_str, _  := url.Parse(request_url)
 
 	// 分类active
-	if request_url == "/category/"+target_url {
+	if url_str.Path == "/category/"+target_url {
 		is_active = true
 		return is_active
 	} else {
@@ -75,7 +83,7 @@ func IsActive(request_url string, target_url string) bool {
 	}
 
 	//后台导航栏active
-	if request_url == target_url {
+	if url_str.Path == target_url {
 		is_active = true
 		return is_active
 	} else {
@@ -83,7 +91,7 @@ func IsActive(request_url string, target_url string) bool {
 	}
 
 	//导航栏下一级页面active
-	if strings.Contains(request_url, target_url) {
+	if strings.Contains(url_str.Path, target_url) {
 		is_active = true
 		return is_active
 	} else {
@@ -101,4 +109,17 @@ func GetStaticVersion(filename string) (t string) {
 		fmt.Println(err)
 	}
 	return t
+}
+
+//资料文件大小单位换算
+func FileSizeUnitConversion(size int64) string {
+	var sizeConversion string
+	if size < 1024 {
+		sizeConversion = Int64ToString(size) + "字节"
+	} else if size < 1024 * 1024 {
+		sizeConversion = fmt.Sprintf("%.2f KB", float64(size) / 1024)
+	} else {
+		sizeConversion = fmt.Sprintf("%.2f MB", float64(size) / 1024 / 1024)
+	}
+	return sizeConversion
 }

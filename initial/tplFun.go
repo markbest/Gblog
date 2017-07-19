@@ -9,4 +9,5 @@ func InitTplFunc() {
 	beego.AddFuncMap("substring", utils.SubString)
 	beego.AddFuncMap("is_active", utils.IsActive)
 	beego.AddFuncMap("version", utils.GetStaticVersion)
+	beego.AddFuncMap("fsize", utils.FileSizeUnitConversion)
 }

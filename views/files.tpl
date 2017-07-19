@@ -5,7 +5,7 @@
             <h3>{{$file.Title}}</h3>
             <div class="file-info">
                 <a href="/files/download/{{$file.Id}}">{{$file.Title}}</a><br>
-                <span>{{date $file.Created_at "Y-m-d H:i:s"}}, {{$file.Size}}KB</span>
+                <span>{{date $file.Created_at "Y-m-d H:i:s"}}, {{fsize $file.Size}}</span>
             </div>
         </li>
         {{end}}

@@ -28,7 +28,7 @@
                     <li class="picture_wall_list">
                         <form name="pic_info" action="/admin/picture/{{$picture.Id}}" method="post">
                             <input type="hidden" name="_xsrf" value="{{$.xsrf_token}}">
-                            <a rel="group" href="/static/uploads/picture/{{$picture.Img_url}}" title="{{$picture.Note}}">
+                            <a rel="group" href="{{base_url "/static/uploads/" $picture.Img_url}}" title="{{$picture.Note}}">
                                 <img src="/static/uploads/{{$picture.Img_url}}" />
                             </a>
                             Input Picture Note :<textarea name="note" style="height:54px;width:200px;border-color:#ffffff;padding:5px;font-size:12px;">{{$picture.Note}}</textarea>

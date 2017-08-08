@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 	"net/url"
+	"github.com/astaxie/beego"
 )
 
 const (
@@ -122,4 +123,9 @@ func FileSizeUnitConversion(size int64) string {
 		sizeConversion = fmt.Sprintf("%.2f MB", float64(size) / 1024 / 1024)
 	}
 	return sizeConversion
+}
+
+//获取
+func GetBaseUrl(prefix string, url string) string {
+	return beego.AppConfig.String("base_url") + prefix + url
 }

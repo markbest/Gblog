@@ -63,25 +63,13 @@ func GetCategoryList() (c []Category) {
 	return c
 }
 
-func GetLayerCategoryList() (c []Category) {
-	o := orm.NewOrm()
-	qs := o.QueryTable(new(Category))
-
-	var l []Category
-	qs.OrderBy("id").All(&l)
-	for _, v := range l {
-		c = append(c, v)
-	}
-	return c
-}
-
 func GetCategoryArticles(id int64, page int, offset int) (a []Article, count int64) {
 	o := orm.NewOrm()
 
 	var articles []Article
 	aqs := o.QueryTable(new(Article)).Filter("cat_id", id)
 	count, _ = aqs.Count()
-	aqs.OrderBy("-created_at").Limit(page, offset).All(&articles)
+	aqs.OrderBy("-created_at").RelatedSel().Limit(page, offset).All(&articles)
 	for _, v := range articles {
 		a = append(a, v)
 	}

@@ -3,7 +3,7 @@ package main
 import (
 	"blog/migrate"
 	"fmt"
-	"os"
+	"flag"
 )
 
 var Usage = func() {
@@ -13,24 +13,26 @@ var Usage = func() {
 }
 
 func main() {
-	args := os.Args
-	if args == nil || len(args) < 2 {
+	flag.Parse()
+	ch := flag.Args()
+
+	if ch == nil || len(ch) == 0 {
 		Usage()
 		return
 	}
 
-	if args[1] == "help" || args[1] == "h" {
+	if ch[0] == "help" || ch[0] == "h" {
 		Usage()
 		return
 	}
 
-	switch args[1] {
+	switch ch[0] {
 	case "create":
-		if len(args) != 3 {
+		if len(ch) != 2 {
 			fmt.Println("USAGE: migrate create <filename>")
 			return
 		}
-		migrate.CreateMigration(args[2])
+		migrate.CreateMigration(ch[1])
 	case "up":
 		migrate.MigrateUp()
 	case "down":

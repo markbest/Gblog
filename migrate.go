@@ -2,8 +2,8 @@ package main
 
 import (
 	"blog/migrate"
-	"fmt"
 	"flag"
+	"fmt"
 )
 
 var Usage = func() {
@@ -14,25 +14,25 @@ var Usage = func() {
 
 func main() {
 	flag.Parse()
-	ch := flag.Args()
+	args := flag.Args()
 
-	if ch == nil || len(ch) == 0 {
+	if len(args) < 1 {
 		Usage()
 		return
 	}
 
-	if ch[0] == "help" || ch[0] == "h" {
+	if args[0] == "help" || args[0] == "h" {
 		Usage()
 		return
 	}
 
-	switch ch[0] {
+	switch args[0] {
 	case "create":
-		if len(ch) != 2 {
+		if len(args) != 2 {
 			fmt.Println("USAGE: migrate create <filename>")
 			return
 		}
-		migrate.CreateMigration(ch[1])
+		migrate.CreateMigration(args[1])
 	case "up":
 		migrate.MigrateUp()
 	case "down":

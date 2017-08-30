@@ -1,7 +1,7 @@
 package test
 
 import (
-	_ "blog/routers"
+	_ "github.com/markbest/Gblog/routers"
 	"net/http"
 	"net/http/httptest"
 	"path/filepath"

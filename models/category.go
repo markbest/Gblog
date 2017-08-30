@@ -1,7 +1,7 @@
 package models
 
 import (
-	"blog/api"
+	"github.com/markbest/Gblog/api"
 	"github.com/astaxie/beego/orm"
 	"strconv"
 	"time"

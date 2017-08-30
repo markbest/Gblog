@@ -1,7 +1,7 @@
 package main
 
 import (
-	"blog/migrate"
+	"github.com/markbest/Gblog/migrate"
 	"flag"
 	"fmt"
 )

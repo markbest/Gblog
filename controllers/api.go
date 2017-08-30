@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"blog/api"
-	"blog/models"
+	"github.com/markbest/Gblog/api"
+	"github.com/markbest/Gblog/models"
 	"github.com/astaxie/beego"
 )
 

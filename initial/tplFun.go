@@ -1,7 +1,7 @@
 package initial
 
 import (
-	"blog/utils"
+	"github.com/markbest/Gblog/utils"
 	"github.com/astaxie/beego"
 )
 

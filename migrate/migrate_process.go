@@ -1,7 +1,7 @@
 package migrate
 
 import (
-	_ "blog/initial"
+	_ "github.com/markbest/Gblog/initial"
 	"fmt"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"

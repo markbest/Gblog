@@ -1,8 +1,8 @@
 package main
 
 import (
-	_ "blog/initial"
-	_ "blog/routers"
+	_ "github.com/markbest/Gblog/initial"
+	_ "github.com/markbest/Gblog/routers"
 	"github.com/astaxie/beego"
 	_ "github.com/astaxie/beego/session/redis"
 )

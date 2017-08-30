@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"blog/models"
-	"blog/utils"
+	"github.com/markbest/Gblog/models"
+	"github.com/markbest/Gblog/utils"
 )
 
 type MainController struct {

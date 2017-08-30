@@ -1,7 +1,7 @@
 package models
 
 import (
-	"blog/utils"
+	"github.com/markbest/Gblog/utils"
 	"errors"
 	"github.com/astaxie/beego/orm"
 	"time"

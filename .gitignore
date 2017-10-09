@@ -1,14 +1,2 @@
-/conf
 /static/uploads
-/static/dist
-/tmp
-blog.exe~
-blog.exe
 .idea/
-blog
-lastupdate.tmp
-routers/commentsRouter_controllers.go
-routers/commentsRouter____________________________Users_apple_go_src_blog_controllers.go
-m
-auto.sh
-routers/commentsRouter_.go

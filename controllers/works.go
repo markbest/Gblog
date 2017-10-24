@@ -7,6 +7,6 @@ type WorksController struct {
 // @router /works [get]
 func (this *WorksController) Get() {
 	//模板变量
-	this.Layout = "layout/frontend/single.tpl"
-	this.TplName = "works.tpl"
+	this.Layout = "frontend/layout/single.tpl"
+	this.TplName = "frontend/works.tpl"
 }

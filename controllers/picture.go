@@ -1,9 +1,9 @@
 package controllers
 
 import (
+	"fmt"
 	"github.com/markbest/Gblog/models"
 	"github.com/markbest/Gblog/utils"
-	"fmt"
 	"os"
 	"path"
 	"time"
@@ -15,14 +15,14 @@ type AdminPictureController struct {
 
 // @router /admin/picture [get]
 func (this *AdminPictureController) ListPictures() {
-	this.Layout = "layout/admin/2columns_left.tpl"
+	this.Layout = "admin/layout/2columns-left.tpl"
 	this.TplName = "admin/picture/list.tpl"
 }
 
 // @router /admin/picture/edit [get]
 func (this *AdminPictureController) EditPicture() {
 	this.Data["pictures"] = models.GetPicturesList()
-	this.Layout = "layout/admin/2columns_left.tpl"
+	this.Layout = "admin/layout/2columns-left.tpl"
 	this.TplName = "admin/picture/edit.tpl"
 }
 

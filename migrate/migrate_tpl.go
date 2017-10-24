@@ -11,8 +11,10 @@ import (
 	"time"
 )
 
-const migrate_tpl = "./database/tpl/migrate.sql.tpl"
-const migrate_file_path = "./database/migrations/"
+const (
+	migrate_tpl       = "./database/tpl/migrate.sql.tpl"
+	migrate_file_path = "./database/migrations/"
+)
 
 /* 加载迁移模板的内容 */
 func LoadMigrateTpl() ([]byte, error) {

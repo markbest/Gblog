@@ -26,8 +26,8 @@ func (this *CategoryController) ListArticle() {
 	//模板变量
 	this.Data["article"] = articles
 	this.Data["page"] = pages.Show()
-	this.Layout = "layout/frontend/2columns_right.tpl"
-	this.TplName = "article_list.tpl"
+	this.Layout = "frontend/layout/2columns-right.tpl"
+	this.TplName = "frontend/article/list.tpl"
 }
 
 type AdminCategoryController struct {
@@ -42,7 +42,7 @@ func (this *AdminCategoryController) ListCategory() {
 
 		//模板变量
 		this.Data["category"] = allCategory
-		this.Layout = "layout/admin/2columns_left.tpl"
+		this.Layout = "admin/layout/2columns-left.tpl"
 		this.TplName = "admin/category.tpl"
 	} else {
 		category := &models.Category{}

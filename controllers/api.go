@@ -1,9 +1,9 @@
 package controllers
 
 import (
+	"github.com/astaxie/beego"
 	"github.com/markbest/Gblog/api"
 	"github.com/markbest/Gblog/models"
-	"github.com/astaxie/beego"
 )
 
 type ApiController struct {

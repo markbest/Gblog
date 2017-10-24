@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"github.com/markbest/Gblog/models"
 	"github.com/astaxie/beego"
+	"github.com/markbest/Gblog/models"
 )
 
 type AdminUserController struct {
@@ -13,7 +13,7 @@ type AdminUserController struct {
 func (this *AdminUserController) Login() {
 	if this.Ctx.Input.Method() == "GET" {
 		beego.ReadFromRequest(&this.Controller)
-		this.Layout = "layout/admin/single.tpl"
+		this.Layout = "admin/layout/single.tpl"
 		this.TplName = "admin/login.tpl"
 	} else {
 		flash := beego.NewFlash()
@@ -55,7 +55,7 @@ func (this *AdminUserController) ListUsers() {
 	//模板变量
 	this.Data["users"] = users
 	this.Data["page"] = pages.Show()
-	this.Layout = "layout/admin/2columns_left.tpl"
+	this.Layout = "admin/layout/2columns-left.tpl"
 	this.TplName = "admin/user/list.tpl"
 }
 
@@ -64,7 +64,7 @@ func (this *AdminUserController) UpdateUser() {
 	id, _ := this.GetInt64(":id")
 	if this.Ctx.Input.Method() == "GET" {
 		this.Data["user"] = models.GetUserInfo(id)
-		this.Layout = "layout/admin/2columns_left.tpl"
+		this.Layout = "admin/layout/2columns-left.tpl"
 		this.TplName = "admin/user/edit.tpl"
 	} else {
 		params := make(map[string]string)

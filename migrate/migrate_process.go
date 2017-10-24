@@ -1,10 +1,10 @@
 package migrate
 
 import (
-	_ "github.com/markbest/Gblog/initial"
 	"fmt"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/markbest/Gblog/utils"
 )
 
 type Migrate struct {

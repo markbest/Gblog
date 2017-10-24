@@ -2,27 +2,27 @@ package controllers
 
 import (
 	"github.com/markbest/Gblog/models"
+	"github.com/markbest/Gblog/utils"
 )
 
-type SearchController struct {
+type MainController struct {
 	BaseController
 }
 
-// @router /search [get]
-func (this *SearchController) Get() {
+// @router / [get]
+func (this *MainController) Get() {
 	//文章列表
-	var pageSize int = 6
+	pageSize := utils.StringToInt(this.config["web_perpage"])
 	page, err := this.GetInt("page") //获取页数
 	if err != nil && page < 1 {
 		page = 1
 	}
-	articles, num := models.GetSearchArticles(this.GetString("s"), pageSize, (page-1)*pageSize)
+	articles, num := models.GetLatestArticles(pageSize, (page-1)*pageSize)
 
 	//分页
-	var pages models.Page = models.NewPage(page, pageSize, int(num), "/search?s="+this.GetString("s"))
+	var pages models.Page = models.NewPage(page, pageSize, int(num), "/")
 
 	//模板变量
-	this.Data["s"] = this.GetString("s")
 	this.Data["article"] = articles
 	this.Data["page"] = pages.Show()
 	this.Layout = "frontend/layout/2columns-right.tpl"

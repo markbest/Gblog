@@ -1,9 +1,9 @@
 package controllers
 
 import (
+	"github.com/astaxie/beego"
 	"github.com/markbest/Gblog/models"
 	"github.com/markbest/Gblog/utils"
-	"github.com/astaxie/beego"
 )
 
 type AdminConfigController struct {
@@ -18,7 +18,7 @@ func (this *AdminConfigController) ConfigList() {
 
 		//模板变量
 		this.Data["configs"] = configs
-		this.Layout = "layout/admin/2columns_left.tpl"
+		this.Layout = "admin/layout/2columns-left.tpl"
 		this.TplName = "admin/config.tpl"
 	} else {
 		config := &models.Config{}

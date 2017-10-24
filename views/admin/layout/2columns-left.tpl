@@ -39,9 +39,6 @@
                 <li {{if is_active .current_url "/admin/category"}}class="active"{{end}}>
                     <a href="/admin/category"><i class="fa fa-dashboard fa-fw"></i> 分类管理</a>
                 </li>
-                <li {{if is_active .current_url "/admin/file"}}class="active"{{end}}>
-                    <a href="/admin/file"><i class="fa fa-briefcase fa-fw"></i> 资料管理</a>
-                </li>
                 <li {{if is_active .current_url "/admin/user"}}class="active"{{end}}>
                     <a href="/admin/user"><i class="fa fa-user fa-fw"></i> 用户管理</a>
                 </li>

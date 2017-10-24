@@ -4,13 +4,13 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
+	"github.com/astaxie/beego"
 	"math/rand"
+	"net/url"
 	"os"
 	"strconv"
 	"strings"
 	"time"
-	"net/url"
-	"github.com/astaxie/beego"
 )
 
 const (
@@ -33,7 +33,7 @@ func StringToInt64(str string) (id int64) {
 }
 
 //int64类型转化为字符串类型
-func Int64ToString(num int64) (str string){
+func Int64ToString(num int64) (str string) {
 	str = strconv.FormatInt(num, 10)
 	return str
 }
@@ -73,7 +73,7 @@ func Krand(size int, kind int) []byte {
 //检查是否是当前URL
 func IsActive(request_url string, target_url string) bool {
 	var is_active bool
-	url_str, _  := url.Parse(request_url)
+	url_str, _ := url.Parse(request_url)
 
 	// 分类active
 	if url_str.Path == "/category/"+target_url {
@@ -110,19 +110,6 @@ func GetStaticVersion(filename string) (t string) {
 		fmt.Println(err)
 	}
 	return t
-}
-
-//资料文件大小单位换算
-func FileSizeUnitConversion(size int64) string {
-	var sizeConversion string
-	if size < 1024 {
-		sizeConversion = Int64ToString(size) + "字节"
-	} else if size < 1024 * 1024 {
-		sizeConversion = fmt.Sprintf("%.2f KB", float64(size) / 1024)
-	} else {
-		sizeConversion = fmt.Sprintf("%.2f MB", float64(size) / 1024 / 1024)
-	}
-	return sizeConversion
 }
 
 //获取

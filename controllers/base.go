@@ -1,17 +1,16 @@
 package controllers
 
 import (
-	"github.com/markbest/Gblog/models"
-	"github.com/markbest/Gblog/utils"
 	"encoding/json"
 	"github.com/astaxie/beego"
+	"github.com/markbest/Gblog/models"
+	"github.com/markbest/Gblog/utils"
 	"time"
 )
 
 type BaseController struct {
 	beego.Controller
-	isLogin bool
-	config  map[string]string
+	config map[string]string
 }
 
 func (this *BaseController) Prepare() {
@@ -33,16 +32,6 @@ func (this *BaseController) Prepare() {
 		}
 	}
 	this.config = config
-
-	//前台登陆信息
-	var loginCustomer models.Customer
-	userLogin := this.GetSession("userLogin")
-	if userLogin == nil {
-		this.isLogin = false
-	} else {
-		this.isLogin = true
-		loginCustomer = models.GetCustomerInfo(this.GetSession("userId"))
-	}
 
 	//分类列表
 	var allCategory []models.Category
@@ -92,8 +81,6 @@ func (this *BaseController) Prepare() {
 	//模板变量
 	this.Data["xsrf_token"] = this.XSRFToken()
 	this.Data["current_url"] = this.Ctx.Request.RequestURI
-	this.Data["isLogin"] = this.isLogin
-	this.Data["loginCustomer"] = loginCustomer
 	this.Data["category"] = allCategory
 	this.Data["latest"] = latest
 	this.Data["hot"] = hot

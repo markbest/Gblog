@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/markbest/Gblog/migrate"
 	"flag"
 	"fmt"
+	"github.com/markbest/Gblog/migrate"
 )
 
 var Usage = func() {

@@ -1,9 +1,9 @@
 package controllers
 
 import (
+	"encoding/json"
 	"github.com/markbest/Gblog/models"
 	"github.com/markbest/Gblog/utils"
-	"encoding/json"
 	"strconv"
 	"time"
 )
@@ -37,8 +37,8 @@ func (this *ArticleController) GetInfo() {
 
 	//模板变量
 	this.Data["article"] = article
-	this.Layout = "layout/frontend/2columns_right.tpl"
-	this.TplName = "article_info.tpl"
+	this.Layout = "frontend/layout/2columns-right.tpl"
+	this.TplName = "frontend/article/info.tpl"
 }
 
 type AdminArticleController struct {
@@ -66,7 +66,7 @@ func (this *AdminArticleController) ListArticles() {
 	//模板变量
 	this.Data["articles"] = articles
 	this.Data["page"] = pages.Show()
-	this.Layout = "layout/admin/2columns_left.tpl"
+	this.Layout = "admin/layout/2columns-left.tpl"
 	this.TplName = "admin/article/list.tpl"
 }
 
@@ -105,7 +105,7 @@ func (this *AdminArticleController) UpdateArticle() {
 func (this *AdminArticleController) AddArticle() {
 	if this.Ctx.Input.Method() == "GET" {
 		this.Data["category"] = models.GetCategoryList()
-		this.Layout = "layout/admin/2columns_left.tpl"
+		this.Layout = "admin/layout/2columns-left.tpl"
 		this.TplName = "admin/article/add.tpl"
 	} else {
 		article := &models.Article{}

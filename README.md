@@ -7,9 +7,7 @@
 - 使用Redis管理博客的缓存
 - 数据库迁移管理
 - 后台图片上传、客户管理
-
-## 博客主题
-[zanblog](http://www.yeahzan.com/zanblog)
+- 博客主题：[zanblog](http://www.yeahzan.com/zanblog)
 
 ## 安装使用
 - 从[Github](https://github.com/markbest/Gblog)上下载源代码

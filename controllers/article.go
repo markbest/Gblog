@@ -76,7 +76,7 @@ func (this *AdminArticleController) UpdateArticle() {
 	if this.Ctx.Input.Method() == "GET" {
 		this.Data["category"] = models.GetCategoryList()
 		this.Data["article"] = models.GetArticleInfo(id)
-		this.Layout = "layout/admin/2columns_left.tpl"
+		this.Layout = "admin/layout/2columns-left.tpl"
 		this.TplName = "admin/article/edit.tpl"
 	} else {
 		if this.GetString("_method") == "DELETE" {

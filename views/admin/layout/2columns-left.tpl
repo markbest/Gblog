@@ -16,7 +16,7 @@
 <body class="admin_body">
     <nav class="navbar navbar-default navbar-static-top">
         <div class="navbar-header">
-            <a class="navbar-brand" href="/"><img src="/static/images/logo.png" /></a>
+            <a class="navbar-brand logo" href="/"><img src="/static/images/logo.png" /></a>
         </div>
         <ul class="nav navbar-top-links navbar-right">
             <li class="dropdown active">

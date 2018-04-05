@@ -8,8 +8,8 @@ import (
 
 var Usage = func() {
 	fmt.Println("USAGE: migrate command [arguments] ...")
-	fmt.Println("\nThe commands are:\n\taction\tmigrate action [create|up|down|status]")
-	fmt.Println("\tfile\tmigrate file name")
+	fmt.Println("\nThe commands are:\n\taction\tmigrate [create|up|down|status]")
+	fmt.Println("\tfile\tmigrate create file")
 }
 
 func main() {
@@ -34,11 +34,11 @@ func main() {
 		}
 		migrate.CreateMigration(args[1])
 	case "up":
-		migrate.MigrateUp()
+		migrate.HandleMigrateUp()
 	case "down":
-		migrate.MigrateDown()
+		migrate.HandleMigrateDown()
 	case "status":
-		migrate.MigrateStatus()
+		migrate.HandleMigrateStatus()
 	default:
 		Usage()
 	}

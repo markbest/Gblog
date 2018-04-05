@@ -1,10 +1,10 @@
 package migrate
 
 import (
+	_ "blog/utils"
 	"fmt"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
-	_ "github.com/markbest/Gblog/utils"
 )
 
 type Migrate struct {
@@ -63,65 +63,53 @@ func GetLatestMigrationsFile(action string) (batch int64, m []Migrate) {
 }
 
 /* 执行迁移文件 */
-func MigrateUp() {
+func HandleMigrateUp() {
 	batch, m := GetLatestMigrationsFile("up")
-	upsql, _, files := LoadMigrationsFile("up", m)
+	upSql, _, files := LoadMigrationsFile("up", m)
 
 	o := orm.NewOrm()
-	for _, k := range upsql {
-		err := o.Begin()
-		_, err = o.Raw(k).Exec()
-		if err != nil {
-			err = o.Rollback()
+	o.Begin()
+	for k, v := range upSql {
+		if _, err := o.Raw(v).Exec(); err != nil {
+			panic(err)
+			o.Rollback()
 		} else {
-			err = o.Commit()
-		}
-		if err != nil {
-			fmt.Println(err)
+			o.Insert(&Migrate{Migration: files[k], Batch: batch + 1})
+			fmt.Println("migrate " + files[k] + " successfully")
 		}
 	}
+	o.Commit()
 
-	if len(files) > 0 {
-		for _, v := range files {
-			o.Insert(&Migrate{Migration: v, Batch: batch + 1})
-			fmt.Print("migrate " + v + " successfully\n")
-		}
-	} else {
-		fmt.Print("no migrations\n")
+	if len(files) == 0 {
+		fmt.Println("no migration files")
 	}
 }
 
 /* 回滚迁移文件 */
-func MigrateDown() {
+func HandleMigrateDown() {
 	batch, m := GetLatestMigrationsFile("down")
-	_, downsql, files := LoadMigrationsFile("down", m)
+	_, downSql, files := LoadMigrationsFile("down", m)
 
 	o := orm.NewOrm()
-	for _, k := range downsql {
-		err := o.Begin()
-		_, err = o.Raw(k).Exec()
-		if err != nil {
-			err = o.Rollback()
+	o.Begin()
+	for k, v := range downSql {
+		if _, err := o.Raw(v).Exec(); err != nil {
+			o.Rollback()
+			panic(err)
 		} else {
-			err = o.Commit()
-		}
-		if err != nil {
-			fmt.Println(err)
+			qs := o.QueryTable(new(Migrate))
+			qs.Filter("batch", batch).Filter("migration", files[k]).Delete()
+			fmt.Println("rollback " + files[k] + " successfully")
 		}
 	}
+	o.Commit()
 
-	if len(files) > 0 {
-		for _, v := range files {
-			qs := o.QueryTable(new(Migrate))
-			qs.Filter("batch", batch).Filter("migration", v).Delete()
-			fmt.Print("rollback " + v + " successfully\n")
-		}
-	} else {
-		fmt.Print("no rollback\n")
+	if len(files) ==  0 {
+		fmt.Println("no rollback files")
 	}
 }
 
-func MigrateStatus() {
+func HandleMigrateStatus() {
 	//已经执行的迁移文件
 	files := GetAllMigrationsFile()
 

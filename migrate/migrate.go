@@ -1,10 +1,10 @@
 package migrate
 
 import (
-	_ "blog/utils"
 	"fmt"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/markbest/Gblog/utils"
 )
 
 type Migrate struct {
@@ -104,7 +104,7 @@ func HandleMigrateDown() {
 	}
 	o.Commit()
 
-	if len(files) ==  0 {
+	if len(files) == 0 {
 		fmt.Println("no rollback files")
 	}
 }

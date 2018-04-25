@@ -8,17 +8,17 @@ import (
 )
 
 type Article struct {
-	Id         int64     `orm:"auto" form:"-"`
-	Title      string    `orm:"size(128)" form:"title" valid:"Required;"`
-	Slug       string    `orm:"size(128)" form:"slug" valid:"Required;"`
-	Summary    string    `orm:"size(256)" form:"summary" valid:"Required;"`
-	Body       string    `orm:"content;type(text);null" form:"body" valid:"Required;"`
-	Image      string    `orm:"size(128)" form:"-"`
-	Views      int64     `form:"-"`
-	User       *User     `orm:"rel(fk)" form:"-"`
-	Cat        *Category `orm:"rel(fk)" form:"-"`
-	Created_at time.Time `orm:"auto_now_add;type(datetime)" form:"-"`
-	Updated_at time.Time `orm:"auto_now;type(datetime)" form:"-"`
+	Id        int64     `orm:"auto" form:"-"`
+	Title     string    `orm:"size(128)" form:"title" valid:"Required;"`
+	Slug      string    `orm:"size(128)" form:"slug" valid:"Required;"`
+	Summary   string    `orm:"size(256)" form:"summary" valid:"Required;"`
+	Body      string    `orm:"content;type(text);null" form:"body" valid:"Required;"`
+	Image     string    `orm:"size(128)" form:"-"`
+	Views     int64     `form:"-"`
+	User      *User     `orm:"rel(fk)" form:"-"`
+	Cat       *Category `orm:"rel(fk)" form:"-"`
+	CreatedAt time.Time `orm:"auto_now_add;type(datetime)" form:"-"`
+	UpdatedAt time.Time `orm:"auto_now;type(datetime)" form:"-"`
 }
 
 func (a *Article) TableName() string {
@@ -35,7 +35,7 @@ func GetLatestArticles(page int, offset int) (a []Article, count int64) {
 	var articles []Article
 	qs := o.QueryTable(new(Article))
 	count, _ = qs.Count()
-	qs.OrderBy("-id").RelatedSel().Limit(page, offset).All(&articles, "Id", "Title", "Summary", "Slug", "Body", "Views", "Created_at")
+	qs.OrderBy("-id").RelatedSel().Limit(page, offset).All(&articles, "Id", "Title", "Summary", "Slug", "Body", "Views", "CreatedAt", "UpdatedAt")
 	for _, v := range articles {
 		a = append(a, v)
 	}
@@ -76,8 +76,8 @@ func GetArticleTags() (t []map[string]int64) {
 
 	for _, v := range articles {
 		tags := make(map[string]int64)
-		tags_list := strings.Split(v.Slug, "、")
-		for _, value := range tags_list {
+		tagsList := strings.Split(v.Slug, "、")
+		for _, value := range tagsList {
 			tags[value] = v.Id
 		}
 		t = append(t, tags)

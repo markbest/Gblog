@@ -9,22 +9,16 @@ type SearchController struct {
 }
 
 // @router /search [get]
-func (this *SearchController) Get() {
-	//文章列表
-	var pageSize int = 6
-	page, err := this.GetInt("page") //获取页数
-	if err != nil && page < 1 {
-		page = 1
-	}
-	articles, num := models.GetSearchArticles(this.GetString("s"), pageSize, (page-1)*pageSize)
-
-	//分页
-	var pages models.Page = models.NewPage(page, pageSize, int(num), "/search?s="+this.GetString("s"))
+func (c *SearchController) Get() {
+	var pageSize = 6
+	page, _ := c.GetInt("page", 1)
+	articles, num := models.GetSearchArticles(c.GetString("s"), pageSize, (page-1)*pageSize)
+	pages := models.NewPage(page, pageSize, int(num), "/search?s="+c.GetString("s"))
 
 	//模板变量
-	this.Data["s"] = this.GetString("s")
-	this.Data["article"] = articles
-	this.Data["page"] = pages.Show()
-	this.Layout = "frontend/layout/2columns-right.tpl"
-	this.TplName = "frontend/article/list.tpl"
+	c.Data["s"] = c.GetString("s")
+	c.Data["article"] = articles
+	c.Data["page"] = pages.Show()
+	c.Layout = "frontend/layout/2columns-right.tpl"
+	c.TplName = "frontend/article/list.tpl"
 }

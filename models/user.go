@@ -1,19 +1,19 @@
 package models
 
 import (
-	"github.com/markbest/Gblog/utils"
 	"errors"
 	"github.com/astaxie/beego/orm"
+	"github.com/markbest/Gblog/utils"
 	"time"
 )
 
 type User struct {
-	Id         int64     `orm:"auto" form:"-"`
-	Name       string    `orm:"size(64)" form:"name" valid:"Required;"`
-	Email      string    `orm:"size(64);unique" form:"email" valid:"Required;Email"`
-	Password   string    `orm:"size(32)" form:"password" valid:"Required"`
-	Created_at time.Time `orm:"auto_now_add;type(datetime)" form:"-"`
-	Updated_at time.Time `orm:"auto_now;type(datetime)" form:"-"`
+	Id        int64     `orm:"auto" form:"-"`
+	Name      string    `orm:"size(64)" form:"name" valid:"Required;"`
+	Email     string    `orm:"size(64);unique" form:"email" valid:"Required;Email"`
+	Password  string    `orm:"size(32)" form:"password" valid:"Required"`
+	CreatedAt time.Time `orm:"auto_now_add;type(datetime)" form:"-"`
+	UpdatedAt time.Time `orm:"auto_now;type(datetime)" form:"-"`
 }
 
 func (u *User) TableName() string {

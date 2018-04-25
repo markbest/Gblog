@@ -13,79 +13,79 @@ type BaseController struct {
 	config map[string]string
 }
 
-func (this *BaseController) Prepare() {
+func (c *BaseController) Prepare() {
 	//redis cache client
 	redis := utils.GetRedisClient()
 
 	//配置信息
-	var cache_time int64
+	var cacheTime int64
 	config := make(map[string]string)
 	if redis.IsExist("configs") {
-		cache_content := string(redis.Get("configs").([]uint8))
-		json.Unmarshal([]byte(cache_content), &config)
-		cache_time = utils.StringToInt64(config["web_cache_time"])
+		cacheContent := string(redis.Get("configs").([]uint8))
+		json.Unmarshal([]byte(cacheContent), &config)
+		cacheTime = utils.StringToInt64(config["web_cache_time"])
 	} else {
 		config = models.GetConfigs()
-		cache_time = utils.StringToInt64(config["web_cache_time"])
+		cacheTime = utils.StringToInt64(config["web_cache_time"])
 		if str, err := json.Marshal(config); err == nil {
-			redis.Put("configs", string(str), time.Duration(cache_time)*time.Second)
+			redis.Put("configs", string(str), time.Duration(cacheTime)*time.Second)
 		}
 	}
-	this.config = config
+	c.config = config
 
 	//分类列表
 	var allCategory []models.Category
 	if redis.IsExist("allCategory") {
-		cache_content := string(redis.Get("allCategory").([]uint8))
-		json.Unmarshal([]byte(cache_content), &allCategory)
+		cacheContent := string(redis.Get("allCategory").([]uint8))
+		json.Unmarshal([]byte(cacheContent), &allCategory)
 	} else {
 		allCategory = models.GetCategoryList()
 		if str, err := json.Marshal(allCategory); err == nil {
-			redis.Put("allCategory", string(str), time.Duration(cache_time)*time.Second)
+			redis.Put("allCategory", string(str), time.Duration(cacheTime)*time.Second)
 		}
 	}
 
 	//侧边栏
 	var latest, hot []models.Article
 	if redis.IsExist("latest") {
-		cache_content := string(redis.Get("latest").([]uint8))
-		json.Unmarshal([]byte(cache_content), &latest)
+		cacheContent := string(redis.Get("latest").([]uint8))
+		json.Unmarshal([]byte(cacheContent), &latest)
 	} else {
 		latest, _ = models.GetLatestArticles(8, 0)
 		if str, err := json.Marshal(latest); err == nil {
-			redis.Put("latest", string(str), time.Duration(cache_time)*time.Second)
+			redis.Put("latest", string(str), time.Duration(cacheTime)*time.Second)
 		}
 	}
 
 	if redis.IsExist("hot") {
-		cache_content := string(redis.Get("hot").([]uint8))
-		json.Unmarshal([]byte(cache_content), &hot)
+		cacheContent := string(redis.Get("hot").([]uint8))
+		json.Unmarshal([]byte(cacheContent), &hot)
 	} else {
 		hot = models.GetTopViewArticles()
 		if str, err := json.Marshal(hot); err == nil {
-			redis.Put("hot", string(str), time.Duration(cache_time)*time.Second)
+			redis.Put("hot", string(str), time.Duration(cacheTime)*time.Second)
 		}
 	}
 
 	var tags []map[string]int64
 	if redis.IsExist("tags") {
-		cache_content := string(redis.Get("tags").([]uint8))
-		json.Unmarshal([]byte(cache_content), &tags)
+		cacheContent := string(redis.Get("tags").([]uint8))
+		json.Unmarshal([]byte(cacheContent), &tags)
 	} else {
 		tags = models.GetArticleTags()
 		if str, err := json.Marshal(tags); err == nil {
-			redis.Put("tags", string(str), time.Duration(cache_time)*time.Second)
+			redis.Put("tags", string(str), time.Duration(cacheTime)*time.Second)
 		}
 	}
 
 	//模板变量
-	this.Data["xsrf_token"] = this.XSRFToken()
-	this.Data["current_url"] = this.Ctx.Request.RequestURI
-	this.Data["category"] = allCategory
-	this.Data["latest"] = latest
-	this.Data["hot"] = hot
-	this.Data["tags"] = tags
-	this.Data["configs"] = config
+	c.Data["xsrf_token"] = c.XSRFToken()
+	c.Data["current_url"] = c.Ctx.Request.RequestURI
+	c.Data["category"] = allCategory
+	c.Data["latest"] = latest
+	c.Data["hot"] = hot
+	c.Data["tags"] = tags
+	c.Data["configs"] = config
 }
 
 type AdminBaseController struct {
@@ -93,20 +93,20 @@ type AdminBaseController struct {
 	isAdminLogin bool
 }
 
-func (this *AdminBaseController) Prepare() {
+func (c *AdminBaseController) Prepare() {
 	//后台登录信息
 	var loginUser models.User
-	admin_userLogin := this.GetSession("admin_userLogin")
-	if admin_userLogin == nil {
-		this.isAdminLogin = false
+	adminUserLogin := c.GetSession("admin_userLogin")
+	if adminUserLogin == nil {
+		c.isAdminLogin = false
 	} else {
-		this.isAdminLogin = true
-		loginUser = models.GetUserInfo(this.GetSession("admin_userId"))
+		c.isAdminLogin = true
+		loginUser = models.GetUserInfo(c.GetSession("admin_userId"))
 	}
 
 	//模板变量
-	this.Data["xsrf_token"] = this.XSRFToken()
-	this.Data["current_url"] = this.Ctx.Request.RequestURI
-	this.Data["isAdminLogin"] = this.isAdminLogin
-	this.Data["loginUser"] = loginUser
+	c.Data["xsrf_token"] = c.XSRFToken()
+	c.Data["current_url"] = c.Ctx.Request.RequestURI
+	c.Data["isAdminLogin"] = c.isAdminLogin
+	c.Data["loginUser"] = loginUser
 }

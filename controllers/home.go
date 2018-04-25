@@ -10,21 +10,14 @@ type MainController struct {
 }
 
 // @router / [get]
-func (this *MainController) Get() {
-	//文章列表
-	pageSize := utils.StringToInt(this.config["web_perpage"])
-	page, err := this.GetInt("page") //获取页数
-	if err != nil && page < 1 {
-		page = 1
-	}
+func (c *MainController) Get() {
+	pageSize := utils.StringToInt(c.config["web_perpage"])
+	page, _ := c.GetInt("page", 1)
 	articles, num := models.GetLatestArticles(pageSize, (page-1)*pageSize)
+	pages := models.NewPage(page, pageSize, int(num), "/")
 
-	//分页
-	var pages models.Page = models.NewPage(page, pageSize, int(num), "/")
-
-	//模板变量
-	this.Data["article"] = articles
-	this.Data["page"] = pages.Show()
-	this.Layout = "frontend/layout/2columns-right.tpl"
-	this.TplName = "frontend/article/list.tpl"
+	c.Data["article"] = articles
+	c.Data["page"] = pages.Show()
+	c.Layout = "frontend/layout/2columns-right.tpl"
+	c.TplName = "frontend/article/list.tpl"
 }

@@ -20,70 +20,65 @@ func NewPage(PageNo int, PageSize int, TotalCount int, Url string) Page {
 	return Page{PageNo: PageNo, PageSize: PageSize, TotalCount: TotalCount, Url: Url}
 }
 
-//计算总页数
-func (this *Page) getPageCount() {
-	var tp float32 = float32(this.TotalCount) / float32(this.PageSize)
+func (p *Page) getPageCount() {
+	var tp = float32(p.TotalCount) / float32(p.PageSize)
 	if tp < 1 {
-		this.TotalPage = 1
+		p.TotalPage = 1
 	}
-	var tpint float32 = float32(int(tp))
-
+	var tpint = float32(int(tp))
 	if tp > tpint {
 		tpint += 1
 	}
-	this.TotalPage = int(tpint)
-	this.LastPage = int(tpint)
-	this.FirstPage = 1
-	this.execUrl()
+	p.TotalPage = int(tpint)
+	p.LastPage = int(tpint)
+	p.FirstPage = 1
+	p.execUrl()
 }
 
-//格式化URL地址
-func (this *Page) execUrl() {
-	if strings.Contains(this.Url, "?") {
-		this.Url = strings.Join([]string{this.Url, "&page="}, "")
+func (p *Page) execUrl() {
+	if strings.Contains(p.Url, "?") {
+		p.Url = strings.Join([]string{p.Url, "&page="}, "")
 	} else {
-		this.Url = strings.Join([]string{this.Url, "?page="}, "")
+		p.Url = strings.Join([]string{p.Url, "?page="}, "")
 	}
 }
 
-//获取URL组织
-func (this *Page) getUrl(page int) string {
-	return strings.Join([]string{this.Url, strconv.Itoa(page)}, "")
+func (p *Page) getUrl(page int) string {
+	return strings.Join([]string{p.Url, strconv.Itoa(page)}, "")
 }
 
-//
-func (this *Page) Show() string {
-	this.getPageCount()
+func (p *Page) Show() string {
 	var buf bytes.Buffer
+	p.getPageCount()
 	buf.WriteString("<ul class=\"pagination\">")
-	if this.PageNo > 1 {
+	if p.PageNo > 1 {
 		buf.WriteString("<li><a href=\"")
-		buf.WriteString(this.getUrl(1))
+		buf.WriteString(p.getUrl(1))
 		buf.WriteString("\">上一页</a></li>")
 	}
-	for i := 1; i <= this.TotalPage; i++ {
-		if i == this.PageNo {
+	for i := 1; i <= p.TotalPage; i++ {
+		if i == p.PageNo {
 			buf.WriteString("<li class=\"active\"><a href=\"javascript:void(0);\">")
 			buf.WriteString(strconv.Itoa(i))
 		} else {
 			buf.WriteString("<li><a href=\"")
-			buf.WriteString(this.getUrl(i))
+			buf.WriteString(p.getUrl(i))
 			buf.WriteString("\">")
 			buf.WriteString(strconv.Itoa(i))
 		}
 		buf.WriteString("</a></li>")
 	}
 
-	if this.PageNo < this.TotalPage {
+	if p.PageNo < p.TotalPage {
 		buf.WriteString("<li><a href=\"")
-		var nextPage int = this.PageNo + 1
-		buf.WriteString(this.getUrl(nextPage))
+		var nextPage = p.PageNo + 1
+		buf.WriteString(p.getUrl(nextPage))
 		buf.WriteString("\">下一页</a></li>")
 	}
 	buf.WriteString("<li><a href=\"javascript:void(0);\">")
-	buf.WriteString(strconv.Itoa(this.PageNo))
+	buf.WriteString(strconv.Itoa(p.PageNo))
 	buf.WriteString("/")
-	buf.WriteString(strconv.Itoa(this.TotalPage))
+	buf.WriteString(strconv.Itoa(p.TotalPage))
 	buf.WriteString("</a></li></ul>")
 	return buf.String()
 }

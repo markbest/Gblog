@@ -19,10 +19,10 @@
                     </li>
                     {{range $id, $category := .category}}
                     <li {{if is_active $.current_url $category.Title}}class="active"{{end}}>
-                        {{if $category.Sub_category}}
+                        {{if $category.SubCategory}}
                         <a data-toggle="dropdown" href="#">{{$category.Title}} <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            {{range $id, $category := $category.Sub_category}}
+                            {{range $id, $category := $category.SubCategory}}
                             <li><a href="/category/{{$category.Title}}">{{$category.Title}}</a></li>
                             {{end}}
                         </ul>

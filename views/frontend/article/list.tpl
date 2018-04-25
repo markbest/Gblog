@@ -3,8 +3,8 @@
     <div class="list_content well">
         <i class="fa fa-bookmark fa-3x article-stick visible-md visible-lg"></i>
         <div class="data-article">
-            <span class="month">{{date $article.Created_at "m"}}月</span>
-            <span class="day">{{date $article.Created_at "d"}}日</span>
+            <span class="month">{{date $article.CreatedAt "m"}}月</span>
+            <span class="day">{{date $article.CreatedAt "d"}}日</span>
         </div>
         <div class="title-article">
             <h1>

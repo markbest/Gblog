@@ -31,8 +31,8 @@
                         {{range $id, $category := .category}}
                         <tr>
                             <td class="level-1">{{$category.Title}}</td>
-                            <td class="center">{{$category.Count_articles}}</td>
-                            <td class="center"><span class="updated_at">{{date $category.Created_at "Y-m-d H:i:s"}}</span></td>
+                            <td class="center">{{$category.CountArticles}}</td>
+                            <td class="center"><span class="updated_at">{{date $category.CreatedAt "Y-m-d H:i:s"}}</span></td>
                             <td class="center">{{$category.Sort}}</td>
                             <td class="center">
                                 <button type="button" data-toggle="modal" data-target="#edit_category_{{$category.Id}}" class="admin-btn btn btn-success">
@@ -66,8 +66,8 @@
                                                     <option value="0">顶级分类</option>
                                                     {{range $id, $s_category := $.category}}
                                                     <option value="{{$s_category.Id}}">{{$s_category.Title}}</option>
-                                                    {{if $s_category.Sub_category}}
-                                                    {{range $id, $ss_category := $s_category.Sub_category}}
+                                                    {{if $s_category.SubCategory}}
+                                                    {{range $id, $ss_category := $s_category.SubCategory}}
                                                     <option value="{{$ss_category.Id}}">&nbsp;&nbsp;&nbsp;&nbsp;{{$ss_category.Title}}</option>
                                                     {{end}}
                                                     {{end}}
@@ -87,12 +87,12 @@
                                 </div>
                             </div>
                         </div>
-                        {{if $category.Sub_category}}
-                            {{range $id, $category := $category.Sub_category}}
+                        {{if $category.SubCategory}}
+                            {{range $id, $category := $category.SubCategory}}
                             <tr>
                                 <td class="level-2">{{$category.Title}}</td>
-                                <td class="center">{{$category.Count_articles}}</td>
-                                <td class="center"><span class="updated_at">{{date $category.Created_at "Y-m-d H:i:s"}}</span></td>
+                                <td class="center">{{$category.CountArticles}}</td>
+                                <td class="center"><span class="updated_at">{{date $category.CreatedAt "Y-m-d H:i:s"}}</span></td>
                                 <td class="center">{{$category.Sort}}</td>
                                 <td class="center">
                                     <button type="button" data-toggle="modal" data-target="#edit_category_{{$category.Id}}" class="admin-btn btn btn-success">
@@ -125,9 +125,9 @@
                                                     <select name="parent_id" class="form-control" required="required">
                                                         <option value="0">顶级分类</option>
                                                         {{range $id, $s_category := $.category}}
-                                                        <option {{if eq $category.Parent_id $s_category.Id}} selected="selected" {{end}} value="{{$s_category.Id}}">{{$s_category.Title}}</option>
-                                                        {{if $s_category.Sub_category}}
-                                                        {{range $id, $ss_category := $s_category.Sub_category}}
+                                                        <option {{if eq $category.ParentId $s_category.Id}} selected="selected" {{end}} value="{{$s_category.Id}}">{{$s_category.Title}}</option>
+                                                        {{if $s_category.SubCategory}}
+                                                        {{range $id, $ss_category := $s_category.SubCategory}}
                                                         <option value="{{$ss_category.Id}}">&nbsp;&nbsp;&nbsp;&nbsp;{{$ss_category.Title}}</option>
                                                         {{end}}
                                                         {{end}}
@@ -172,8 +172,8 @@
                                                 <option value="0">顶级分类</option>
                                                 {{range $id, $category := .category}}
                                                 <option value="{{$category.Id}}">{{$category.Title}}</option>
-                                                {{if $category.Sub_category}}
-                                                    {{range $id, $category := $category.Sub_category}}
+                                                {{if $category.SubCategory}}
+                                                    {{range $id, $category := $category.SubCategory}}
                                                     <option value="{{$category.Id}}">&nbsp;&nbsp;&nbsp;&nbsp;{{$category.Title}}</option>
                                                     {{end}}
                                                 {{end}}

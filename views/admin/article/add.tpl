@@ -23,8 +23,8 @@
                             <option value=""></option>
                             {{range $id, $s_category := $.category}}
                             <option value="{{$s_category.Id}}">{{$s_category.Title}}</option>
-                            {{if $s_category.Sub_category}}
-                            {{range $id, $ss_category := $s_category.Sub_category}}
+                            {{if $s_category.SubCategory}}
+                            {{range $id, $ss_category := $s_category.SubCategory}}
                             <option value="{{$ss_category.Id}}">&nbsp;&nbsp;&nbsp;&nbsp;{{$ss_category.Title}}</option>
                             {{end}}
                             {{end}}

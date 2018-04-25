@@ -13,32 +13,32 @@ type ArticleController struct {
 }
 
 // @router /article/:id [get]
-func (this *ArticleController) GetInfo() {
+func (c *ArticleController) GetInfo() {
 	//redis cache client
 	redis := utils.GetRedisClient()
 
-	//文章详情（如果有缓存，先从缓存中取数据）
+	//文章详情
 	var article models.Article
-	article_id, _ := this.GetInt64(":id")
-	cache_tag := "article-" + strconv.FormatInt(article_id, 10)
-	if redis.IsExist(cache_tag) {
-		cache_content := string(redis.Get(cache_tag).([]uint8))
-		json.Unmarshal([]byte(cache_content), &article)
+	articleId, _ := c.GetInt64(":id")
+	cacheTag := "article-" + strconv.FormatInt(articleId, 10)
+	if redis.IsExist(cacheTag) {
+		cacheContent := string(redis.Get(cacheTag).([]uint8))
+		json.Unmarshal([]byte(cacheContent), &article)
 	} else {
-		article = models.GetArticleInfo(article_id)
+		article = models.GetArticleInfo(articleId)
 		if str, err := json.Marshal(article); err == nil {
-			cache_time := utils.StringToInt64(this.config["web_cache_time"])
-			redis.Put(cache_tag, string(str), time.Duration(cache_time)*time.Second)
+			cacheTime := utils.StringToInt64(c.config["web_cache_time"])
+			redis.Put(cacheTag, string(str), time.Duration(cacheTime)*time.Second)
 		}
 	}
 
 	//增加article的views
-	models.IncreaseViews(article_id)
+	models.IncreaseViews(articleId)
 
 	//模板变量
-	this.Data["article"] = article
-	this.Layout = "frontend/layout/2columns-right.tpl"
-	this.TplName = "frontend/article/info.tpl"
+	c.Data["article"] = article
+	c.Layout = "frontend/layout/2columns-right.tpl"
+	c.TplName = "frontend/article/info.tpl"
 }
 
 type AdminArticleController struct {
@@ -46,76 +46,68 @@ type AdminArticleController struct {
 }
 
 // @router /admin [get]
-func (this *AdminArticleController) Index() {
-	this.Redirect("/admin/article", 302)
+func (c *AdminArticleController) Index() {
+	c.Redirect("/admin/article", 302)
 }
 
 // @router /admin/article [get]
-func (this *AdminArticleController) ListArticles() {
-	//文章列表
-	var pageSize int = 30
-	page, err := this.GetInt("page") //获取页数
-	if err != nil && page < 1 {
-		page = 1
-	}
+func (c *AdminArticleController) ListArticles() {
+	var pageSize = 30
+	page, _ := c.GetInt("page", 1)
 	articles, num := models.GetLatestArticles(pageSize, (page-1)*pageSize)
+	pages := models.NewPage(page, pageSize, int(num), "/admin/article")
 
-	//分页
-	var pages models.Page = models.NewPage(page, pageSize, int(num), "/admin/article")
-
-	//模板变量
-	this.Data["articles"] = articles
-	this.Data["page"] = pages.Show()
-	this.Layout = "admin/layout/2columns-left.tpl"
-	this.TplName = "admin/article/list.tpl"
+	c.Data["articles"] = articles
+	c.Data["page"] = pages.Show()
+	c.Layout = "admin/layout/2columns-left.tpl"
+	c.TplName = "admin/article/list.tpl"
 }
 
 // @router /admin/article/:id [get,post,delete]
-func (this *AdminArticleController) UpdateArticle() {
-	id, _ := this.GetInt64(":id")
-	if this.Ctx.Input.Method() == "GET" {
-		this.Data["category"] = models.GetCategoryList()
-		this.Data["article"] = models.GetArticleInfo(id)
-		this.Layout = "admin/layout/2columns-left.tpl"
-		this.TplName = "admin/article/edit.tpl"
+func (c *AdminArticleController) UpdateArticle() {
+	id, _ := c.GetInt64(":id")
+	if c.Ctx.Input.Method() == "GET" {
+		c.Data["category"] = models.GetCategoryList()
+		c.Data["article"] = models.GetArticleInfo(id)
+		c.Layout = "admin/layout/2columns-left.tpl"
+		c.TplName = "admin/article/edit.tpl"
 	} else {
-		if this.GetString("_method") == "DELETE" {
+		if c.GetString("_method") == "DELETE" {
 			models.DeleteArticle(id)
 		} else {
 			params := make(map[string]string)
-			params["title"] = this.GetString("title")
-			params["slug"] = this.GetString("slug")
-			params["summary"] = this.GetString("summary")
-			params["body"] = this.GetString("body")
-			params["cat_id"] = this.GetString("cat_id")
+			params["title"] = c.GetString("title")
+			params["slug"] = c.GetString("slug")
+			params["summary"] = c.GetString("summary")
+			params["body"] = c.GetString("body")
+			params["cat_id"] = c.GetString("cat_id")
 			params["user_id"] = "1"
 			models.UpdateArticle(id, params)
 
 			//删除文章的缓存
 			redis := utils.GetRedisClient()
-			cache_tag := "article-" + strconv.FormatInt(id, 10)
-			redis.Delete(cache_tag)
+			cacheTag := "article-" + strconv.FormatInt(id, 10)
+			redis.Delete(cacheTag)
 		}
-		this.Redirect("/admin/article", 302)
+		c.Redirect("/admin/article", 302)
 	}
-
 }
 
 // @router /admin/article/create [get,post]
-func (this *AdminArticleController) AddArticle() {
-	if this.Ctx.Input.Method() == "GET" {
-		this.Data["category"] = models.GetCategoryList()
-		this.Layout = "admin/layout/2columns-left.tpl"
-		this.TplName = "admin/article/add.tpl"
+func (c *AdminArticleController) AddArticle() {
+	if c.Ctx.Input.Method() == "GET" {
+		c.Data["category"] = models.GetCategoryList()
+		c.Layout = "admin/layout/2columns-left.tpl"
+		c.TplName = "admin/article/add.tpl"
 	} else {
 		article := &models.Article{}
-		if err := this.ParseForm(article); err != nil {
+		if err := c.ParseForm(article); err != nil {
 			return
 		}
 
 		//文章归属分类
-		cat_id, _ := this.GetInt64("cat_id")
-		category := models.GetCategoryInfo(cat_id)
+		catId, _ := c.GetInt64("cat_id")
+		category := models.GetCategoryInfo(catId)
 		article.Cat = &category
 
 		//文章创建者
@@ -123,6 +115,6 @@ func (this *AdminArticleController) AddArticle() {
 		article.User = &user
 
 		models.InsertArticle(article)
-		this.Redirect("/admin/article", 302)
+		c.Redirect("/admin/article", 302)
 	}
 }

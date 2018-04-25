@@ -11,28 +11,18 @@ type ApiController struct {
 }
 
 // @router /category/list [get]
-func (this *ApiController) GetCategoryList() {
-	var data = []api.Category{}
-	data = models.GetApiCategoryJson()
-	this.Data["json"] = data
-	this.ServeJSON()
+func (c *ApiController) GetCategoryList() {
+	data := models.GetApiCategoryJson()
+	c.Data["json"] = data
+	c.ServeJSON()
 }
 
 // @router /article/list [get]
-func (this *ApiController) GetArticleList() {
-	var data = []api.Article{}
-	per_page, _ := this.GetInt("per_page")
-	page, _ := this.GetInt("page")
-
-	if per_page <= 0 {
-		per_page = 10
-	}
-
-	if page <= 0 {
-		page = 1
-	}
-
-	Articles, total := models.GetLatestArticles(per_page, per_page*(page-1))
+func (c *ApiController) GetArticleList() {
+	var data []api.Article
+	perPage, _ := c.GetInt("per_page", 10)
+	page, _ := c.GetInt("page", 1)
+	Articles, total := models.GetLatestArticles(perPage, perPage*(page-1))
 	for _, v := range Articles {
 		var art api.Article
 		art.Id = v.Id
@@ -42,10 +32,10 @@ func (this *ApiController) GetArticleList() {
 		art.Summary = v.Summary
 		art.Views = v.Views
 		art.User = v.User.Name
-		art.Created_at = &v.Created_at
-		art.Updated_at = &v.Updated_at
+		art.CreatedAt = &v.CreatedAt
+		art.UpdatedAt = &v.UpdatedAt
 		data = append(data, art)
 	}
-	this.Data["json"] = map[string]interface{}{"Total": total, "Per_page": per_page, "Page": page, "Data": data}
-	this.ServeJSON()
+	c.Data["json"] = map[string]interface{}{"Total": total, "Per_page": perPage, "Page": page, "Data": data}
+	c.ServeJSON()
 }

@@ -42,7 +42,7 @@
                             <td><a class="title" href="/admin/article/{{$article.Id}}">{{$article.Title}}</a></td>
                             <td>{{$article.Slug}}</td>
                             <td class="center"><a class="category" href="/category/{{$article.Cat.Title}}" target="_blank">{{$article.Cat.Title}}</a></td>
-                            <td class="center"><span class="updated_at">{{date $article.Created_at "m-d H:i"}}</span></td>
+                            <td class="center"><span class="updated_at">{{date $article.CreatedAt "m-d H:i"}}</span></td>
                             <td class="center"><span class="updated_at">{{$article.Views}}</span></td>
                             <td class="center">
                                 <a href="/admin/article/{{$article.Id}}" class="admin-btn btn btn-success"><i class="fa fa-pencil fa-fw"></i>编辑</a>

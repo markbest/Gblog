@@ -24,7 +24,7 @@
                             <td>{{$user.Id}}</td>
                             <td class="center">{{$user.Name}}</td>
                             <td class="center">{{$user.Email}}</td>
-                            <td class="center">{{date $user.Created_at "Y-m-d H:i:s"}}</td>
+                            <td class="center">{{date $user.CreatedAt "Y-m-d H:i:s"}}</td>
                             <td class="center">
                                 <a href="/admin/user/{{$user.Id}}" class="btn btn-success"><i class="fa fa-pencil fa-fw"></i>编辑</a>
                                 <form action="/admin/user/{{$user.Id}}" method="POST" style="display:inline;">

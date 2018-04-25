@@ -6,12 +6,12 @@ import (
 )
 
 type Config struct {
-	Id         int64     `orm:"auto" form:"-"`
-	Name       string    `orm:"size(255)" form:"name" valid:"Required;"`
-	Path       string    `orm:"size(255)" form:"path" valid:"Required;"`
-	Value      string    `orm:"size(255)" form:"value" valid:"Required;"`
-	Created_at time.Time `orm:"auto_now_add;type(datetime)" form:"-"`
-	Updated_at time.Time `orm:"auto_now;type(datetime)" form:"-"`
+	Id        int64     `orm:"auto" form:"-"`
+	Name      string    `orm:"size(255)" form:"name" valid:"Required;"`
+	Path      string    `orm:"size(255)" form:"path" valid:"Required;"`
+	Value     string    `orm:"size(255)" form:"value" valid:"Required;"`
+	CreatedAt time.Time `orm:"auto_now_add;type(datetime)" form:"-"`
+	UpdatedAt time.Time `orm:"auto_now;type(datetime)" form:"-"`
 }
 
 func (c *Config) TableName() string {

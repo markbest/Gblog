@@ -14,45 +14,42 @@ type AdminPictureController struct {
 }
 
 // @router /admin/picture [get]
-func (this *AdminPictureController) ListPictures() {
-	this.Layout = "admin/layout/2columns-left.tpl"
-	this.TplName = "admin/picture/list.tpl"
+func (c *AdminPictureController) ListPictures() {
+	c.Layout = "admin/layout/2columns-left.tpl"
+	c.TplName = "admin/picture/list.tpl"
 }
 
 // @router /admin/picture/edit [get]
-func (this *AdminPictureController) EditPicture() {
-	this.Data["pictures"] = models.GetPicturesList()
-	this.Layout = "admin/layout/2columns-left.tpl"
-	this.TplName = "admin/picture/edit.tpl"
+func (c *AdminPictureController) EditPicture() {
+	c.Data["pictures"] = models.GetPicturesList()
+	c.Layout = "admin/layout/2columns-left.tpl"
+	c.TplName = "admin/picture/edit.tpl"
 }
 
 // @router /admin/picture/:id [post]
-func (this *AdminPictureController) UpdatePicture() {
+func (c *AdminPictureController) UpdatePicture() {
 	params := make(map[string]string)
-	id, _ := this.GetInt64(":id")
+	id, _ := c.GetInt64(":id")
 
-	if this.GetString("is_delete") == "1" {
+	if c.GetString("is_delete") == "1" {
 		models.DeletePicture(id)
 	} else {
-		if this.GetString("note") != "" {
-			params["note"] = this.GetString("note")
+		if c.GetString("note") != "" {
+			params["note"] = c.GetString("note")
 		}
 		models.UpdatePicture(id, params)
 	}
-	this.Redirect("/admin/picture/edit", 302)
+	c.Redirect("/admin/picture/edit", 302)
 }
 
 // @router /admin/picture/upload [post]
-func (this *AdminPictureController) UploadPicture() {
-	// 获取上传文件
-	f, h, err := this.GetFile("file")
+func (c *AdminPictureController) UploadPicture() {
+	f, h, err := c.GetFile("file")
 	if err == nil {
-		// 关闭文件
 		f.Close()
 	} else {
-		// 获取错误则输出错误信息
-		this.Data["json"] = map[string]interface{}{"success": 0, "message": err.Error()}
-		this.ServeJSON()
+		c.Data["json"] = map[string]interface{}{"success": 0, "message": err.Error()}
+		c.ServeJSON()
 		return
 	}
 	// 设置保存目录
@@ -65,35 +62,32 @@ func (this *AdminPictureController) UploadPicture() {
 	saveToFile := string(utils.Krand(8, utils.KC_RAND_KIND_ALL)) + path.Ext(FileName)
 
 	// 将文件保存到服务器中
-	err = this.SaveToFile("file", fmt.Sprintf("%s/%s", dirPath, saveToFile))
+	err = c.SaveToFile("file", fmt.Sprintf("%s/%s", dirPath, saveToFile))
 	if err != nil {
 		// 出错则输出错误信息
-		this.Data["json"] = map[string]interface{}{"success": 0, "message": err.Error()}
-		this.ServeJSON()
+		c.Data["json"] = map[string]interface{}{"success": 0, "message": err.Error()}
+		c.ServeJSON()
 		return
 	}
 
 	// 上传图片
 	picture := &models.Picture{}
-	picture.Img_url = dirDatePrefix + "/" + saveToFile
+	picture.ImgUrl = dirDatePrefix + "/" + saveToFile
 	picture.Note = ""
 	models.InsertPicture(picture)
 
-	this.Data["json"] = map[string]interface{}{"success": 1, "message": dirDatePrefix + "/" + saveToFile}
-	this.ServeJSON()
+	c.Data["json"] = map[string]interface{}{"success": 1, "message": dirDatePrefix + "/" + saveToFile}
+	c.ServeJSON()
 }
 
 // @router /admin/markdown/upload [post]
-func (this *AdminPictureController) UploadMarkdownPicture() {
-	// 获取上传文件
-	f, h, err := this.GetFile("editormd-image-file")
+func (c *AdminPictureController) UploadMarkdownPicture() {
+	f, h, err := c.GetFile("editormd-image-file")
 	if err == nil {
-		// 关闭文件
 		f.Close()
 	} else {
-		// 获取错误则输出错误信息
-		this.Data["json"] = map[string]interface{}{"success": 0, "message": err.Error()}
-		this.ServeJSON()
+		c.Data["json"] = map[string]interface{}{"success": 0, "message": err.Error()}
+		c.ServeJSON()
 		return
 	}
 	// 设置保存目录
@@ -106,20 +100,19 @@ func (this *AdminPictureController) UploadMarkdownPicture() {
 	saveToFile := string(utils.Krand(8, utils.KC_RAND_KIND_ALL)) + path.Ext(FileName)
 
 	// 将文件保存到服务器中
-	err = this.SaveToFile("editormd-image-file", fmt.Sprintf("%s/%s", dirPath, saveToFile))
+	err = c.SaveToFile("editormd-image-file", fmt.Sprintf("%s/%s", dirPath, saveToFile))
 	if err != nil {
-		// 出错则输出错误信息
-		this.Data["json"] = map[string]interface{}{"success": 0, "message": err.Error()}
-		this.ServeJSON()
+		c.Data["json"] = map[string]interface{}{"success": 0, "message": err.Error()}
+		c.ServeJSON()
 		return
 	}
 
 	// 上传图片
 	picture := &models.Picture{}
-	picture.Img_url = dirDatePrefix + "/" + saveToFile
+	picture.ImgUrl = dirDatePrefix + "/" + saveToFile
 	picture.Note = ""
 	models.InsertPicture(picture)
 
-	this.Data["json"] = map[string]interface{}{"success": 1, "message": "success upoload", "url": "/static/uploads/" + dirDatePrefix + "/" + saveToFile}
-	this.ServeJSON()
+	c.Data["json"] = map[string]interface{}{"success": 1, "message": "success upoload", "url": "/static/uploads/" + dirDatePrefix + "/" + saveToFile}
+	c.ServeJSON()
 }

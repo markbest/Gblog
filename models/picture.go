@@ -6,11 +6,11 @@ import (
 )
 
 type Picture struct {
-	Id         int64     `orm:"auto"`
-	Img_url    string    `orm:"size(128)"`
-	Note       string    `orm:"size(128)"`
-	Created_at time.Time `orm:"auto_now_add;type(datetime)"`
-	Updated_at time.Time `orm:"auto_now;type(datetime)"`
+	Id        int64     `orm:"auto"`
+	ImgUrl    string    `orm:"size(128)"`
+	Note      string    `orm:"size(128)"`
+	CreatedAt time.Time `orm:"auto_now_add;type(datetime)"`
+	UpdatedAt time.Time `orm:"auto_now;type(datetime)"`
 }
 
 func (p *Picture) TableName() string {
@@ -45,7 +45,7 @@ func UpdatePicture(id int64, params map[string]string) {
 	if o.Read(&picture) == nil {
 		for k, v := range params {
 			if k == "img_url" {
-				picture.Img_url = v
+				picture.ImgUrl = v
 			}
 			if k == "note" {
 				picture.Note = v

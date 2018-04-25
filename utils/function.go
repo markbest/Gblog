@@ -58,10 +58,10 @@ func SubString(s string, pos, length int) string {
 // 随机字符串
 func Krand(size int, kind int) []byte {
 	ikind, kinds, result := kind, [][]int{[]int{10, 48}, []int{26, 97}, []int{26, 65}}, make([]byte, size)
-	is_all := kind > 2 || kind < 0
+	isAll := kind > 2 || kind < 0
 	rand.Seed(time.Now().UnixNano())
 	for i := 0; i < size; i++ {
-		if is_all { // random ikind
+		if isAll { // random ikind
 			ikind = rand.Intn(3)
 		}
 		scope, base := kinds[ikind][0], kinds[ikind][1]
@@ -71,40 +71,40 @@ func Krand(size int, kind int) []byte {
 }
 
 //检查是否是当前URL
-func IsActive(request_url string, target_url string) bool {
-	var is_active bool
-	url_str, _ := url.Parse(request_url)
+func IsActive(requestUrl string, targetUrl string) bool {
+	var isActive bool
+	urlStr, _ := url.Parse(requestUrl)
 
 	// 分类active
-	if url_str.Path == "/category/"+target_url {
-		is_active = true
-		return is_active
+	if urlStr.Path == "/category/"+targetUrl {
+		isActive = true
+		return isActive
 	} else {
-		is_active = false
+		isActive = false
 	}
 
 	//后台导航栏active
-	if url_str.Path == target_url {
-		is_active = true
-		return is_active
+	if urlStr.Path == targetUrl {
+		isActive = true
+		return isActive
 	} else {
-		is_active = false
+		isActive = false
 	}
 
 	//导航栏下一级页面active
-	if strings.Contains(url_str.Path, target_url) {
-		is_active = true
-		return is_active
+	if strings.Contains(urlStr.Path, targetUrl) {
+		isActive = true
+		return isActive
 	} else {
-		is_active = false
+		isActive = false
 	}
-	return is_active
+	return isActive
 }
 
 //获取静态文件的版本号
 func GetStaticVersion(filename string) (t string) {
-	file_path := "static/css/" + filename
-	if fileInfo, err := os.Stat(file_path); err == nil {
+	filePath := "static/css/" + filename
+	if fileInfo, err := os.Stat(filePath); err == nil {
 		t = fileInfo.ModTime().Format("200601021504")
 	} else {
 		fmt.Println(err)

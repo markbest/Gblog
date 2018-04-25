@@ -33,7 +33,7 @@
                             <td>{{$config.Name}}</td>
                             <td>{{$config.Path}}</td>
                             <td>{{$config.Value}}</td>
-                            <td>{{date $config.Created_at "m-d H:i"}}</td>
+                            <td>{{date $config.CreatedAt "m-d H:i"}}</td>
                             <td class="center">
                                 <button type="button" data-toggle="modal" data-target="#edit_config_{{$config.Id}}" class="admin-btn btn btn-success">
                                     <i class="fa fa-pencil fa-fw"></i>编辑</a>

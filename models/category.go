@@ -1,21 +1,21 @@
 package models
 
 import (
-	"github.com/markbest/Gblog/api"
 	"github.com/astaxie/beego/orm"
+	"github.com/markbest/Gblog/api"
 	"strconv"
 	"time"
 )
 
 type Category struct {
-	Id             int64      `orm:"auto" form:"-"`
-	Title          string     `orm:"size(256)" form:"title" valid:"Required;"`
-	Parent_id      int64      `form:"parent_id" valid:"Required;"`
-	Sort           int64      `form:"sort" valid:"Required;"`
-	Created_at     time.Time  `orm:"auto_now_add;type(datetime)" form:"-"`
-	Updated_at     time.Time  `orm:"auto_now;type(datetime)" form:"-"`
-	Count_articles int64      `orm:"-" form:"-" json:"count"`
-	Sub_category   []Category `orm:"-" form:"-"`
+	Id            int64      `orm:"auto" form:"-"`
+	Title         string     `orm:"size(256)" form:"title" valid:"Required;"`
+	ParentId      int64      `form:"parent_id" valid:"Required;"`
+	Sort          int64      `form:"sort" valid:"Required;"`
+	CreatedAt     time.Time  `orm:"auto_now_add;type(datetime)" form:"-"`
+	UpdatedAt     time.Time  `orm:"auto_now;type(datetime)" form:"-"`
+	CountArticles int64      `orm:"-" form:"-" json:"count"`
+	SubCategory   []Category `orm:"-" form:"-"`
 }
 
 func (c *Category) TableName() string {
@@ -26,15 +26,15 @@ func init() {
 	orm.RegisterModel(new(Category))
 }
 
-func GetSubCategory(parent_id int64) (c []Category) {
+func GetSubCategory(parentId int64) (c []Category) {
 	o := orm.NewOrm()
 	qs := o.QueryTable(new(Category))
 
 	var l []Category
-	qs.Filter("parent_id", parent_id).OrderBy("sort").All(&l)
+	qs.Filter("parent_id", parentId).OrderBy("sort").All(&l)
 	for _, v := range l {
-		_, count_articles := GetCategoryArticles(v.Id, 10, 1)
-		allCategory := Category{v.Id, v.Title, v.Parent_id, v.Sort, v.Created_at, v.Updated_at, count_articles, nil}
+		_, countArticles := GetCategoryArticles(v.Id, 10, 1)
+		allCategory := Category{v.Id, v.Title, v.ParentId, v.Sort, v.CreatedAt, v.UpdatedAt, countArticles, nil}
 		c = append(c, allCategory)
 	}
 	return c
@@ -51,13 +51,13 @@ func GetCategoryList() (c []Category) {
 		subCategory := GetSubCategory(v.Id)
 		if subCategory != nil {
 			for _, sub := range subCategory {
-				count += sub.Count_articles
+				count += sub.CountArticles
 			}
 		} else {
 			_, count = GetCategoryArticles(v.Id, 10, 1)
 		}
 
-		allCategory := Category{v.Id, v.Title, v.Parent_id, v.Sort, v.Created_at, v.Updated_at, count, GetSubCategory(v.Id)}
+		allCategory := Category{v.Id, v.Title, v.ParentId, v.Sort, v.CreatedAt, v.UpdatedAt, count, GetSubCategory(v.Id)}
 		c = append(c, allCategory)
 	}
 	return c
@@ -101,7 +101,7 @@ func UpdateCategory(id int64, params map[string]string) error {
 			}
 			if k == "parent_id" {
 				id, _ := strconv.ParseInt(v, 10, 64)
-				category.Parent_id = id
+				category.ParentId = id
 			}
 			if k == "sort" {
 				id, _ := strconv.ParseInt(v, 10, 64)
@@ -150,20 +150,20 @@ func GetApiCategoryJson() (c []api.Category) {
 	qs := o.QueryTable(new(Category))
 
 	var l []Category
-	qs.Filter("parent_id", 0).OrderBy("sort").All(&l)
+	qs.Filter("parent_id", 0).Exclude("title", "资料下载").OrderBy("sort").All(&l)
 	for _, v := range l {
 		var s []Category
 		var subCategory []api.Category
 		sqs := o.QueryTable(new(Category))
 		sqs.Filter("parent_id", v.Id).OrderBy("sort").All(&s)
 		for _, sub := range s {
-			sub_articles := GetApiCategoryArticles(sub.Id)
-			sub_category := api.Category{sub.Id, sub.Title, sub_articles, nil}
-			subCategory = append(subCategory, sub_category)
+			subArticles := GetApiCategoryArticles(sub.Id)
+			subCategories := api.Category{Id: sub.Id, Title: sub.Title, Articles: subArticles, SubCategory: nil}
+			subCategory = append(subCategory, subCategories)
 		}
 
 		articles := GetApiCategoryArticles(v.Id)
-		allCategory := api.Category{v.Id, v.Title, articles, subCategory}
+		allCategory := api.Category{Id: v.Id, Title: v.Title, Articles: articles, SubCategory: subCategory}
 		c = append(c, allCategory)
 	}
 	return c

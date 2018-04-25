@@ -5,8 +5,7 @@ type WorksController struct {
 }
 
 // @router /works [get]
-func (this *WorksController) Get() {
-	//模板变量
-	this.Layout = "frontend/layout/single.tpl"
-	this.TplName = "frontend/works.tpl"
+func (c *WorksController) Get() {
+	c.Layout = "frontend/layout/single.tpl"
+	c.TplName = "frontend/works.tpl"
 }

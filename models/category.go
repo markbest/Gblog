@@ -130,14 +130,14 @@ func GetCategoryInfoByTitle(title string) (c Category) {
 	return c
 }
 
-func GetApiCategoryArticles(id int64) (a []api.Article) {
+func GetApiCategoryArticles(id int64) (a []ApiArticle) {
 	o := orm.NewOrm()
 
-	var articles []Article
+	var articles []ApiArticle
 	aqs := o.QueryTable(new(Article)).Filter("cat_id", id)
 	aqs.OrderBy("-created_at").All(&articles)
 	for _, v := range articles {
-		var article api.Article
+		var article ApiArticle
 		article.Id = v.Id
 		article.Title = v.Title
 		a = append(a, article)
@@ -145,7 +145,7 @@ func GetApiCategoryArticles(id int64) (a []api.Article) {
 	return a
 }
 
-func GetApiCategoryJson() (c []api.Category) {
+func GetApiCategoryJson() (c []ApiCategory) {
 	o := orm.NewOrm()
 	qs := o.QueryTable(new(Category))
 
@@ -153,17 +153,17 @@ func GetApiCategoryJson() (c []api.Category) {
 	qs.Filter("parent_id", 0).Exclude("title", "资料下载").OrderBy("sort").All(&l)
 	for _, v := range l {
 		var s []Category
-		var subCategory []api.Category
+		var subCategory []ApiCategory
 		sqs := o.QueryTable(new(Category))
 		sqs.Filter("parent_id", v.Id).OrderBy("sort").All(&s)
 		for _, sub := range s {
 			subArticles := GetApiCategoryArticles(sub.Id)
-			subCategories := api.Category{Id: sub.Id, Title: sub.Title, Articles: subArticles, SubCategory: nil}
+			subCategories := ApiCategory{Id: sub.Id, Title: sub.Title, Articles: subArticles, SubCategory: nil}
 			subCategory = append(subCategory, subCategories)
 		}
 
 		articles := GetApiCategoryArticles(v.Id)
-		allCategory := api.Category{Id: v.Id, Title: v.Title, Articles: articles, SubCategory: subCategory}
+		allCategory := ApiCategory{Id: v.Id, Title: v.Title, Articles: articles, SubCategory: subCategory}
 		c = append(c, allCategory)
 	}
 	return c

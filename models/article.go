@@ -60,7 +60,13 @@ func GetSearchArticles(keyword string, page int, offset int) (a []Article, count
 	var articles []Article
 	qs := o.QueryTable(new(Article)).Filter("title__icontains", keyword)
 	count, _ = qs.Count()
-	qs.OrderBy("-created_at").Limit(page, offset).All(&articles)
+
+	if page > 0 {
+		qs.OrderBy("-created_at").Limit(page, offset).All(&articles)
+	} else {
+		qs.OrderBy("-created_at").All(&articles)
+	}
+
 	for _, v := range articles {
 		a = append(a, v)
 	}

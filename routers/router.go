@@ -1,9 +1,9 @@
 package routers
 
 import (
-	"github.com/markbest/Gblog/controllers"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
+	"github.com/markbest/Gblog/controllers"
 )
 
 func init() {

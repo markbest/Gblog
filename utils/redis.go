@@ -9,7 +9,7 @@ import (
 
 func GetRedisClient() cache.Cache {
 	redisHost := beego.AppConfig.String("redis_host")
-	redisPwd:= beego.AppConfig.String("redis_password")
+	redisPwd := beego.AppConfig.String("redis_password")
 	redisPort := beego.AppConfig.String("redis_port")
 	redisDb := beego.AppConfig.String("redis_db")
 	conn := redisHost + ":" + redisPort

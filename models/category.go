@@ -2,7 +2,6 @@ package models
 
 import (
 	"github.com/astaxie/beego/orm"
-	"github.com/markbest/Gblog/api"
 	"strconv"
 	"time"
 )
